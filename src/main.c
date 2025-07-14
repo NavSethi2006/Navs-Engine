@@ -26,6 +26,9 @@ int main(int argc, char* argv[]) {
 
     // Create renderer
     renderer = SDL_CreateRenderer(window, NULL);
+
+    printf("%s\n %s\n %s\n",SDL_GetRenderDriver(0), SDL_GetRenderDriver(1), SDL_GetRenderDriver(2));
+
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);

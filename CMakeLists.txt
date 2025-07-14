@@ -18,8 +18,6 @@ target_include_directories(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/include/)
 if (WIN32)
     # Windows-specific options (if needed)
     target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/win/libSDL3.a)
-
-
 elseif (UNIX)
-    # Linux-specific options (if needed)
+    target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/gnu/libSDL3.so)
 endif()
