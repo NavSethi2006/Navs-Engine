@@ -11,14 +11,14 @@ file(GLOB SOURCES src/*.c)
 
 add_executable(online_pong ${SOURCES})
 
-
 # Include SDL3 headers
 target_include_directories(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/include/)
 
 # Platform-specific settings
 if (WIN32)
     # Windows-specific options (if needed)
-    target_link_libraries(online_pong PRIVATE ${CMAKE_SOURCE_DIR}/lib/win/SDL3.lib)
+    target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/win/libSDL3.a)
+
 
 elseif (UNIX)
     # Linux-specific options (if needed)
