@@ -23,6 +23,10 @@ void create_window(Window *window, const char* title,int width, int height) {
     SDL_SetRenderDrawColor(window->renderer, 0,0,0,255);
 }
 
+void update_window(Window *window) {
+    
+}
+
 
 void fullscreen_window(Window *window){ SDL_SetWindowFullscreen(window->window, true); }
 void borderless_window(Window *window){ SDL_SetWindowBordered(window->window, true); }

@@ -38,6 +38,34 @@ int main(int argc, char* argv[]) {
     
     init_all();
 
+    Window window;
+    SDL_Event event;
+
+    game(&window);
+
+    int gameloop = 1;
+
+    while(gameloop) {
+
+        while (SDL_PollEvent(&event)) {w
+            if (event.type == SDL_EVENT_QUIT) {
+                running = false;
+            }
+
+            // You can handle other events here too
+        }
+
+        // Rendering
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Black background
+        SDL_RenderClear(renderer);
+
+        // Draw your stuff here...
+
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
+
+    }
 
 
 

@@ -1,2 +1,7 @@
 build
 include
+bin/CMakeFiles
+bin/cmake_install.cmake
+bin/CMakeCache.txt
+bin/Makefile
+bin/online_pong.exe
