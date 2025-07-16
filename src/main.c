@@ -9,6 +9,7 @@
 #include <SDL3/SDL.h>
 #include <stdio.h>
 #include "window.h"
+#include "scene.h"
 #include "game.h"
 
 
@@ -55,7 +56,7 @@ int main(int argc, char* argv[]) {
 
     create_window(&window, "Online Pong", 800, 600);
 
-    game(&window);
+    switch_scene(get_game_scene());
 
     int gameloop = 1;
 
@@ -65,12 +66,23 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_EVENT_QUIT) {
                 gameloop = 0;
             }
+
+
+            if (CURRENT_SCENE && CURRENT_SCENE->handle_event) {
+                CURRENT_SCENE->handle_event(&event);
+            }
+
         }
 
+        if (CURRENT_SCENE && CURRENT_SCENE->update) {
+            CURRENT_SCENE->update();
+        }
 
         begin_rendering(&window);
 
-
+        if (CURRENT_SCENE && CURRENT_SCENE->render) {
+            CURRENT_SCENE->render(&window);
+        }
 
         end_rendering(&window);
 
