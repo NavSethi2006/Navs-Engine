@@ -1,6 +1,18 @@
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 #include <SDL3/SDL.h>
 #include <stdio.h>
+#include "window.h"
 #include "game.h"
+
+
+
 
 int init_all() {
 
@@ -41,27 +53,27 @@ int main(int argc, char* argv[]) {
     Window window;
     SDL_Event event;
 
+    create_window(&window, "Online Pong", 800, 600);
+
     game(&window);
 
     int gameloop = 1;
 
     while(gameloop) {
 
-        while (SDL_PollEvent(&event)) {w
+        while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
-                running = false;
+                gameloop = 0;
             }
-
-            // You can handle other events here too
         }
 
-        // Rendering
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Black background
-        SDL_RenderClear(renderer);
 
-        // Draw your stuff here...
+        begin_rendering(&window);
 
-        SDL_RenderPresent(renderer);
+
+
+        end_rendering(&window);
+
 
         SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
 

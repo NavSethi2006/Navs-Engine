@@ -1,6 +1,5 @@
 #include "game.h"
 
-Window window;
 
 void game(Window *window) {
 

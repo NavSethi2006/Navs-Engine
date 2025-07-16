@@ -23,8 +23,15 @@ void create_window(Window *window, const char* title,int width, int height) {
     SDL_SetRenderDrawColor(window->renderer, 0,0,0,255);
 }
 
-void update_window(Window *window) {
-    
+
+void begin_rendering(Window *window) {
+    SDL_SetRenderDrawColor(window->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(window->renderer);
+}
+
+
+void end_rendering(Window *window) {
+    SDL_RenderPresent(window->renderer);
 }
 
 
