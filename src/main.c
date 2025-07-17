@@ -7,10 +7,12 @@
  */
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_image.h>
 #include <stdio.h>
 #include "window.h"
 #include "scene.h"
 #include "game.h"
+#include "assets/assets.h"
 
 
 
@@ -21,6 +23,7 @@ int init_all() {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return -1;
     }
+   
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize subsystems! SDL_Error: %s\n", SDL_GetError());
         return -1;
@@ -55,6 +58,8 @@ int main(int argc, char* argv[]) {
     SDL_Event event;
 
     create_window(&window, "Online Pong", 800, 600);
+
+    init_asset_manager(&window);
 
     switch_scene(get_game_scene());
 

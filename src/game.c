@@ -1,23 +1,25 @@
 #include "game.h"
 
+Texture tex;
 
 void game() {
-    printf("game init\n");
+    tex = get_texture_asset("../src/assets/test.png");
+
 }
 
 void game_handle_event(SDL_Event *event) {
-    printf("game handle event\n");
     if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_ESCAPE) {
         switch_scene(get_menu_scene());
     }
 }
 
 void game_update() {
-    printf("game update\n");
+
 }
 
 void game_render(Window *window) {
     printf("game render\n");
+    render_texture(&tex, window);
 }
 
 

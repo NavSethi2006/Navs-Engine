@@ -6,6 +6,8 @@
 #include "window.h"
 #include "menu.h"
 #include "scene.h"
+#include "render.h"
+#include "assets/assets.h"
 
 void game();
 void game_handle_event(SDL_Event *event);

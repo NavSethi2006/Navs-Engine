@@ -8,8 +8,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Add source files
 file(GLOB SOURCES src/*.c)
+file (GLOB ASSETS src/assets/*.c)
 
-add_executable(online_pong ${SOURCES})
+add_executable(online_pong ${SOURCES} ${ASSETS})
 
 # Include SDL3 headers
 target_include_directories(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/include/)
@@ -18,6 +19,9 @@ target_include_directories(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/include/)
 if (WIN32)
     # Windows-specific options (if needed)
     target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/win/libSDL3.a)
+    target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/win/libSDL3_image.a)
 elseif (UNIX)
     target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/gnu/libSDL3.so)
+    target_link_libraries(online_pong PUBLIC ${CMAKE_SOURCE_DIR}/lib/win/libSDL3_image.a)
+
 endif()

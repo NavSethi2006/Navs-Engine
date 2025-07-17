@@ -1,0 +1,21 @@
+#ifndef ASSETS_H
+#define ASSETS_H
+
+#include "../render.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <SDL3/SDL_image.h>
+#include <SDL3/SDL.h>
+
+typedef struct Asset {
+    char *key;
+    Texture texture;
+    struct Asset* next;
+} Asset;
+
+void init_asset_manager(Window* window);
+Texture get_texture_asset(const char* file_path);
+void free_all_assets();
+
+#endif // ASSETS_H

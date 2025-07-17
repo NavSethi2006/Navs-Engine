@@ -20,7 +20,6 @@ void create_window(Window *window, const char* title,int width, int height) {
     }
 
     // Set renderer draw color to white
-    SDL_SetRenderDrawColor(window->renderer, 0,0,0,255);
 }
 
 

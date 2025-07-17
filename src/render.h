@@ -4,17 +4,25 @@
 
 #include <SDL3/SDL.h>
 #include "window.h"
-#include <stb_image.h>
 #include <stdio.h>
 
 typedef struct Texture {
     SDL_Texture* Image;  /**< The SDL texture for rendering */
     float x;
     float y;
-
+    float width;
+    float height;
 } Texture;
 
-Texture load_texture(const char* file_path, int width, int height, Window* window);
+typedef struct Animation {
+    Texture texture;
+    SDL_FRect* frames;
+    int frame_count;
+    float switch_time;
+} Animation;
+
 void render_texture(Texture *texture, Window *window);
+
+
 
 #endif // RENDER_H

@@ -5,6 +5,11 @@
         "stdio.h": "c",
         "menu.h": "c",
         "stdlib.h": "c",
-        "sdl.h": "c"
+        "sdl.h": "c",
+        "render.h": "c",
+        "stb_image.h": "c",
+        "scene.h": "c",
+        "assets.h": "c",
+        "sdl_image.h": "c"
     }
 }
