@@ -80,9 +80,13 @@ int main(int argc, char* argv[]) {
 
         begin_rendering(&window);
 
+        
+
         if (CURRENT_SCENE && CURRENT_SCENE->render) {
             CURRENT_SCENE->render(&window);
         }
+
+
 
         end_rendering(&window);
 
