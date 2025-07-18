@@ -11,7 +11,7 @@
 
 void game();
 void game_handle_event(SDL_Event *event);
-void game_update();
+void game_update(float delta_time);
 void game_render(Window *window);
 Scene *get_game_scene(); 
 

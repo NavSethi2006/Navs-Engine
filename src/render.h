@@ -6,6 +6,15 @@
 #include "window.h"
 #include <stdio.h>
 
+
+typedef enum {
+    ANIM_IDLE,
+    ANIM_RUN,
+    ANIM_JUMP,
+    ANIM_ATTACK,
+    ANIM_COUNT
+} AnimationState;
+
 typedef struct Texture {
     SDL_Texture* Image;  /**< The SDL texture for rendering */
     int x;
@@ -14,25 +23,36 @@ typedef struct Texture {
     int height;
 } Texture;
 
+typedef struct Frame {
+    float x;
+    float y;
+    float width;
+    float height;
+} Frame;
 
 typedef struct Animation {
-    SDL_FRect *rectangle;
+    Frame *frames;
     int frame_count;
     float switch_time;
     int current_frame;
+    float timer;
 } Animation;
+
+typedef struct Animations {
+    Texture *texture;
+    Animation *animations[ANIM_COUNT];
+    AnimationState current_state;
+} Animations;
 
 
 void render_texture(Texture *texture, Window *window);
 void set_texture(Texture *texture,int x, int y, int width, int height);
-void render_texture_with_rect(Texture *texture, Window *window, SDL_FRect* frame);
+void render_texture_with_rect(Texture *texture, Window *window, Frame* frame);
 
 
-Animation init_animation(SDL_FRect rectangle[], int frame_count, int switch_time);
-
-void update_animation(Animation *animation);
-
-void render_animation(Texture* texture, Animation *animation, Window *window);
+Animation* init_animation(Frame *frames,int frame_count, int switch_time);
+void update_animation(Animation *animation, float delta_time);
+void render_animation(Animation *animation, Window *window, Texture *texture);
 
 
 

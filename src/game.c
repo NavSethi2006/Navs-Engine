@@ -1,10 +1,14 @@
 #include "game.h"
 
 Texture tex;
-Animation animation1;
-Animation animation2;
+Animation *animation;
 
-Animation animations[2];
+Frame animation_tex_coords1[3] = {{0, 33, 20, 31},
+                               {20, 33, 20, 31},
+                               {40, 33, 20, 31}};
+
+Frame animation_tex_coords2[1] = {0,0,17,32};
+
 
 enum PlayerStates {
     IDLE,
@@ -16,24 +20,9 @@ void game() {
     PlayerStates = IDLE;
 
     tex = get_texture_asset("../src/assets/player.png");
-    set_texture(&tex, 0, 0, 20, 20);
+    set_texture(&tex, 20, 20, 200, 300);
 
-    SDL_FRect animation_tex_coords1[3] = {{0, 33, 20, 31},
-                               {20, 33, 20, 31},
-                               {40, 33, 20, 31}};
-
-    SDL_FRect animation_tex_coords2[1] = {0,0,17,32};
-
-
-    animation1 = init_animation(animation_tex_coords1, 3, 0.1);
-
-    animation2 = init_animation(animation_tex_coords2, 1, 0.1);
-
-
-
-    animations[0] = animation1;
-    animations[1] = animation2;
-
+    animation = init_animation(animation_tex_coords1, 3, 0.1);
 
 }
 
@@ -51,17 +40,15 @@ void game_handle_event(SDL_Event *event) {
     }
 }
 
-void game_update() {
-    
-
+void game_update(float delta_time) {
 
     switch (PlayerStates)
     {
     case IDLE:
-        update_animation(&animations[0]);
+        update_animation(animation, delta_time);
         break;
     case RUN:
-        update_animation(&animations[1]);
+        update_animation(animation, delta_time);
         break;
     default:
         break;
@@ -72,10 +59,7 @@ void game_update() {
 
 void game_render(Window *window) {
 
-    render_animation(&tex, animations, window);
-    printf("nigga");
-
-
+    render_animation(animation, window, &tex);
 
 }
 

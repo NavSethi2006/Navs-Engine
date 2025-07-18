@@ -65,6 +65,8 @@ int main(int argc, char* argv[]) {
 
     int gameloop = 1;
 
+    Uint64 last_ticks = SDL_GetTicks();
+
     while(gameloop) {
 
         while (SDL_PollEvent(&event)) {
@@ -79,8 +81,12 @@ int main(int argc, char* argv[]) {
 
         }
 
+        Uint64 now = SDL_GetTicks();
+        float delta = (now - last_ticks) / 1000.0f;
+        last_ticks = now;
+
         if (CURRENT_SCENE && CURRENT_SCENE->update) {
-            CURRENT_SCENE->update();
+            CURRENT_SCENE->update(delta);
         }
 
         begin_rendering(&window);

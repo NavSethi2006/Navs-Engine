@@ -1,6 +1,7 @@
 #include "render.h"
 
 
+
 void set_texture(Texture *texture,int x, int y, int width, int height) {
     texture->x = x;
     texture->y = y;
@@ -12,40 +13,42 @@ void render_texture(Texture *texture, Window *window) {
     SDL_RenderTexture(window->renderer, texture->Image, NULL, NULL);
 }
 
-void render_texture_with_rect(Texture *texture, Window *window, SDL_FRect *frame) {
+void render_texture_with_rect(Texture *texture, Window *window, Frame *frame) {
     SDL_FRect texture_rect = { (float)texture->x, (float)texture->y, (float)texture->width, (float)texture->height};
-    SDL_RenderTexture(window->renderer, texture->Image, frame, &texture_rect);
+    SDL_FRect dst_rect = { (float)frame->x, (float)frame->y, (float)frame->width, (float)frame->height };
+    SDL_RenderTexture(window->renderer, texture->Image, &dst_rect, &texture_rect);
 }
 
 
-Animation init_animation(SDL_FRect rectangle[], int frame_count, int switch_time) {
-    Animation* animation;
-    animation = malloc(sizeof(Animation));
-    animation->rectangle = malloc(sizeof(SDL_FRect)* frame_count);
-
-    for(int i = 0; i <= frame_count; i++) {
-        animation->rectangle[i] = rectangle[i];
-    }
-
+Animation* init_animation(Frame *frames,int frame_count, int switch_time) {
+    Animation *animation = malloc(sizeof(Animation));
     animation->switch_time = switch_time;
+    animation->frame_count = frame_count;
+    animation->frames = malloc(sizeof(Frame) * frame_count);
     animation->current_frame = 0;
+    animation->timer = 0.0f;
+
+    for (int i = 0; i < frame_count; i++) {
+        animation->frames[i] = frames[i];
+    }
+    return animation;
 
 }
 
-void update_animation(Animation *animation) {  
-    Uint32 time = SDL_GetTicks();
-    if(time >= animation->switch_time) {
-        time -= animation->switch_time;
-        animation->current_frame++;
-    }
-    if (animation->current_frame >= animation->frame_count) {
-        animation->current_frame = 0;
+void update_animation(Animation *animation, float delta_time) {
+
+    animation->timer += delta_time;
+    if (animation->timer >= animation->switch_time) {
+        animation->timer = 0.0f;
+        animation->current_frame = (animation->current_frame + 1) % animation->frame_count;
     }
 }
 
-void render_animation(Texture* texture, Animation *animation, Window *window) {
+void render_animation(Animation *animation, Window *window, Texture *texture) {
     
-    render_texture_with_rect(texture, window, &animation->rectangle[animation->current_frame]);
+    Frame *frame = &animation->frames[animation->current_frame];
+
+    render_texture_with_rect(texture, window, frame);
 }
 
 

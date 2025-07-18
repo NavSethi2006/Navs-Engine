@@ -10,7 +10,7 @@
 typedef struct Scene {
     void (*init)(void);
     void (*handle_event)(SDL_Event *event);
-    void (*update)(void);
+    void (*update)(float delta_time);
     void (*render)(Window *window);
 } Scene;
  

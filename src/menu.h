@@ -11,7 +11,7 @@
 
 void menu();
 void menu_handle_event(SDL_Event *event);
-void menu_update();
+void menu_update(float delta_time);
 void menu_render(Window *window);
 
 extern Scene Menu_Scene;

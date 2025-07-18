@@ -12,7 +12,7 @@ void menu_handle_event(SDL_Event *event) {
     }
 }
 
-void menu_update() {
+void menu_update(float delta_time) {
     printf("menu update\n");
 }
 
