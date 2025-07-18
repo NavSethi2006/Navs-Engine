@@ -8,20 +8,31 @@
 
 typedef struct Texture {
     SDL_Texture* Image;  /**< The SDL texture for rendering */
-    float x;
-    float y;
-    float width;
-    float height;
+    int x;
+    int y;
+    int width;
+    int height;
 } Texture;
 
+
 typedef struct Animation {
-    Texture texture;
-    SDL_FRect* frames;
+    SDL_FRect *rectangle;
     int frame_count;
     float switch_time;
+    int current_frame;
 } Animation;
 
+
 void render_texture(Texture *texture, Window *window);
+void set_texture(Texture *texture,int x, int y, int width, int height);
+void render_texture_with_rect(Texture *texture, Window *window, SDL_FRect* frame);
+
+
+Animation init_animation(SDL_FRect rectangle[], int frame_count, int switch_time);
+
+void update_animation(Animation *animation);
+
+void render_animation(Texture* texture, Animation *animation, Window *window);
 
 
 
