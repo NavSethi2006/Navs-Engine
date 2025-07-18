@@ -59,7 +59,9 @@ void game_update(float delta_time) {
 
 void game_render(Window *window) {
 
-    render_animation(animation, window, &tex);
+//    render_animation(animation, window, &tex);
+
+    render_texture_with_rect(&tex, window, &animation_tex_coords2[0]); // Render the second texture with different coordinates
 
 }
 

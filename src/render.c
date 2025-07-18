@@ -16,7 +16,18 @@ void render_texture(Texture *texture, Window *window) {
 void render_texture_with_rect(Texture *texture, Window *window, Frame *frame) {
     SDL_FRect texture_rect = { (float)texture->x, (float)texture->y, (float)texture->width, (float)texture->height};
     SDL_FRect dst_rect = { (float)frame->x, (float)frame->y, (float)frame->width, (float)frame->height };
-    SDL_RenderTexture(window->renderer, texture->Image, &dst_rect, &texture_rect);
+    // printf("Rendering texture at (%f, %f) with size (%f, %f)\n", 
+    //        dst_rect.x, dst_rect.y, dst_rect.w, dst_rect.h);
+
+    // printf("Texture rect at (%f, %f) with size (%f, %f)\n", 
+    //        texture_rect.x, texture_rect.y, texture_rect.w, texture_rect.h);
+
+    if(SDL_RenderTexture(window->renderer, texture->Image, &dst_rect, &texture_rect)) {
+        printf("Rendering successfully: %s\n", SDL_GetError());
+        
+    }else {
+        printf("Error Rendering: %s\n", SDL_GetError());
+    }
 }
 
 
@@ -47,6 +58,7 @@ void update_animation(Animation *animation, float delta_time) {
 void render_animation(Animation *animation, Window *window, Texture *texture) {
     
     Frame *frame = &animation->frames[animation->current_frame];
+
 
     render_texture_with_rect(texture, window, frame);
 }

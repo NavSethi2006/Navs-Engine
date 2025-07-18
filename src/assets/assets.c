@@ -19,6 +19,8 @@ Texture get_texture_asset(const char* file_path) {
 
     // Not found, load it
     texture.Image = IMG_LoadTexture(renderer, file_path);
+    printf("shit\n");
+
     if (!texture.Image) return texture;
 
     // Cache it
