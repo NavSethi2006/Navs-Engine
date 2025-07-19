@@ -12,6 +12,14 @@ typedef enum {
     ANIM_RUN,
     ANIM_JUMP,
     ANIM_ATTACK,
+    ANIM_HURT,
+    ANIM_DEATH,
+    ANIM_WALK,
+    ANIM_FALL,
+    ANIM_CROUCH,
+    ANIM_CLIMB,
+    ANIM_SWIM,
+    ANIM_RESPAWN,
     ANIM_COUNT
 } AnimationState;
 
@@ -38,11 +46,11 @@ typedef struct Animation {
     float timer;
 } Animation;
 
-typedef struct Animations {
+typedef struct Animation_set {
     Texture *texture;
-    Animation *animations[ANIM_COUNT];
     AnimationState current_state;
-} Animations;
+    Animation *animations[];
+} Animation_set;
 
 
 void render_texture(Texture *texture, Window *window);
@@ -50,9 +58,13 @@ void set_texture(Texture *texture,int x, int y, int width, int height);
 void render_texture_with_rect(Texture *texture, Window *window, Frame* frame);
 
 
-Animation* init_animation(Frame *frames,int frame_count, int switch_time);
+Animation* init_animation(Frame *frames,int frame_count, float switch_time);
+
 void update_animation(Animation *animation, float delta_time);
 void render_animation(Animation *animation, Window *window, Texture *texture);
+
+void update_animation_set(Animation_set *animations, int current_state,float delta_time);
+void render_animation_set(Animation_set *animations, int current_state,Window *window);
 
 
 

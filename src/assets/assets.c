@@ -8,23 +8,36 @@ void init_asset_manager(Window* window) {
 }
 
 Texture get_texture_asset(const char* file_path) {
-// Look up in list
+    Texture texture = {0};  // Zero initialize
 
-    Texture texture;
+    // Search cache
     Asset* curr = assets;
     while (curr) {
-        if (strcmp(curr->key, file_path) == 0) return curr->texture;
+        if (curr->key && strcmp(curr->key, file_path) == 0) {
+            return curr->texture;
+        }
         curr = curr->next;
     }
 
     // Not found, load it
+    if (!renderer) {
+        printf("ERROR: renderer is NULL when loading '%s'\n", file_path);
+        return texture;
+    }
+
     texture.Image = IMG_LoadTexture(renderer, file_path);
-    printf("shit\n");
+    if (!texture.Image) {
+        printf("Failed to load texture '%s': %s\n", file_path, SDL_GetError());
+        return texture;
+    }
 
-    if (!texture.Image) return texture;
-
-    // Cache it
+    // Add to cache
     Asset* newAsset = malloc(sizeof(Asset));
+    if (!newAsset) {
+        printf("Memory allocation failed for Asset\n");
+        return texture;
+    }
+
     newAsset->key = strdup(file_path);
     newAsset->texture = texture;
     newAsset->next = assets;

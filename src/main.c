@@ -61,25 +61,27 @@ int main(int argc, char* argv[]) {
 
     init_asset_manager(&window);
 
-    switch_scene(get_game_scene());
+    switch_scene(get_menu_scene());
 
     int gameloop = 1;
 
     Uint64 last_ticks = SDL_GetTicks();
 
+
     while(gameloop) {
+
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
                 gameloop = 0;
             }
-
-
             if (CURRENT_SCENE && CURRENT_SCENE->handle_event) {
                 CURRENT_SCENE->handle_event(&event);
+
             }
 
         }
+
 
         Uint64 now = SDL_GetTicks();
         float delta = (now - last_ticks) / 1000.0f;
@@ -91,13 +93,9 @@ int main(int argc, char* argv[]) {
 
         begin_rendering(&window);
 
-        
-
         if (CURRENT_SCENE && CURRENT_SCENE->render) {
             CURRENT_SCENE->render(&window);
         }
-
-
 
         end_rendering(&window);
 
