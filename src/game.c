@@ -1,7 +1,8 @@
 #include "game.h"
 
 Texture tex;
-Animation_set animations;
+Animation_set *animations;
+Animation *animation;
 
 Frame RUN_ANIMATION[3] = {{0, 33, 20, 31},
                                {20, 33, 20, 31},
@@ -20,7 +21,7 @@ Frame WALL_CLIMB_ANIMATION[4] = {{0,199,17,32},
                                 {80,200,16,31},
                             {118, 201, 23,31}};
 
-Frame ATTACK_ANIMATION[3] = {{0,240,17,30},
+Frame ATTACK_ANIMATION[4] = {{0,240,17,30},
                             {28,241,42,30},
                             {74,241,29,30},
                             {115,241,27,29}};
@@ -41,13 +42,15 @@ void game() {
 
     set_texture(&tex, 20, 20, 30, 55);
 
+    animations = malloc(sizeof(Animation_set));
 
+    animations->animations[IDLE] = init_animation(IDLE_ANIMATION, 1, 0.2f);
+    animations->animations[RUN] = init_animation(RUN_ANIMATION, 3, 0.2f);
+    animations->animations[JUMP] = init_animation(JUMP_ANIMATION, 5, 0.1f);
+    animations->animations[ATTACK] = init_animation(ATTACK_ANIMATION, 4, 0.1f);
+    animations->animations[WALL_CLIMB] = init_animation(WALL_CLIMB_ANIMATION, 4, 0.1f);
 
-    animations.animations[IDLE] = init_animation(IDLE_ANIMATION, 1, 0.5f);
-    animations.animations[RUN] = init_animation(RUN_ANIMATION, 3, 0.2f);
-    animations.animations[JUMP] = init_animation(JUMP_ANIMATION, 5, 0.1f);
-    animations.animations[ATTACK] = init_animation(ATTACK_ANIMATION, 4, 0.1f);
-    animations.animations[WALL_CLIMB] = init_animation(WALL_CLIMB_ANIMATION, 4, 0.1f);
+    animations->texture = &tex;
 
     PlayerStates = IDLE;
 
@@ -76,21 +79,17 @@ void game_handle_event(SDL_Event *event) {
         PlayerStates = WALL_CLIMB;
     }
 
+
 }
 
 void game_update(float delta_time) {
 
-    //update_animation_set(&animations, PlayerStates,delta_time);
-
-
-
+    update_animation_set(animations, PlayerStates, delta_time);
 }
 
 void game_render(Window *window) {
 
-    //render_animation_set(&animations, PlayerStates,window);
-
-
+    render_animation_set(animations, PlayerStates, window);
 
 }
 

@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
 
     init_asset_manager(&window);
 
-    switch_scene(get_menu_scene());
+    switch_scene(get_game_scene());
 
     int gameloop = 1;
 
@@ -75,12 +75,14 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_EVENT_QUIT) {
                 gameloop = 0;
             }
+            
             if (CURRENT_SCENE && CURRENT_SCENE->handle_event) {
                 CURRENT_SCENE->handle_event(&event);
 
             }
-
+            
         }
+
 
 
         Uint64 now = SDL_GetTicks();
@@ -89,6 +91,7 @@ int main(int argc, char* argv[]) {
 
         if (CURRENT_SCENE && CURRENT_SCENE->update) {
             CURRENT_SCENE->update(delta);
+
         }
 
         begin_rendering(&window);
@@ -103,6 +106,7 @@ int main(int argc, char* argv[]) {
         SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
 
     }
+
 
 
 

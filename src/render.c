@@ -36,11 +36,14 @@ Animation* init_animation(Frame *frames,int frame_count, float switch_time) {
     for (int i = 0; i < frame_count; i++) {
         animation->frames[i] = frames[i];
     }
+
     return animation;
 }
 
 void update_animation(Animation *animation, float delta_time) {
+
     animation->timer += delta_time;
+
     if (animation->timer >= animation->switch_time) {
         animation->timer = 0.0f;
         animation->current_frame = (animation->current_frame + 1) % animation->frame_count;
@@ -49,7 +52,12 @@ void update_animation(Animation *animation, float delta_time) {
 
 void render_animation(Animation *animation, Window *window, Texture *texture) {   
     Frame *frame = &animation->frames[animation->current_frame];
-    render_texture_with_rect(texture, window, frame);
+    
+    SDL_FRect dest = { texture->x, texture->y, texture->width, texture->height };
+
+    SDL_FRect src = { frame->x, frame->y, frame->width, frame->height };
+
+    SDL_RenderTexture(window->renderer, texture->Image, &src, &dest);
 }
 
 void update_animation_set(Animation_set *animations, int current_state,float delta_time) {

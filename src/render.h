@@ -24,11 +24,11 @@ typedef enum {
 } AnimationState;
 
 typedef struct Texture {
-    SDL_Texture* Image;  /**< The SDL texture for rendering */
-    int x;
-    int y;
-    int width;
-    int height;
+    SDL_Texture* Image;
+    float x;
+    float y;
+    float width;
+    float height;
 } Texture;
 
 typedef struct Frame {
@@ -48,7 +48,6 @@ typedef struct Animation {
 
 typedef struct Animation_set {
     Texture *texture;
-    AnimationState current_state;
     Animation *animations[];
 } Animation_set;
 
@@ -57,12 +56,9 @@ void render_texture(Texture *texture, Window *window);
 void set_texture(Texture *texture,int x, int y, int width, int height);
 void render_texture_with_rect(Texture *texture, Window *window, Frame* frame);
 
-
 Animation* init_animation(Frame *frames,int frame_count, float switch_time);
-
 void update_animation(Animation *animation, float delta_time);
 void render_animation(Animation *animation, Window *window, Texture *texture);
-
 void update_animation_set(Animation_set *animations, int current_state,float delta_time);
 void render_animation_set(Animation_set *animations, int current_state,Window *window);
 

@@ -14,6 +14,7 @@ Texture get_texture_asset(const char* file_path) {
     Asset* curr = assets;
     while (curr) {
         if (curr->key && strcmp(curr->key, file_path) == 0) {
+            printf("Not In cache\n");
             return curr->texture;
         }
         curr = curr->next;

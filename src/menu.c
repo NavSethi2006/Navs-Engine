@@ -2,22 +2,19 @@
 
 
 void menu() {
-    printf("menu init\n");
 }
 
 void menu_handle_event(SDL_Event *event) {
-    printf("menu handle event\n");
     if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_ESCAPE) {
         switch_scene(get_game_scene());
     }
 }
 
 void menu_update(float delta_time) {
-    printf("menu update\n");
 }
 
 void menu_render(Window* window) {
-    printf("menu render\n");
+    
 }
 
 Scene Menu_Scene = {
