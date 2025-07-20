@@ -4,24 +4,22 @@
 #include <SDL3/SDL.h>
 #include "window.h"
 #include "render.h"
+#include "utils/file_parser.h"
 
-#define TILE_SIZE 32
-#define MAX_TILES_X 100
-#define MAX_TILES_Y 100
-
-typedef struct Tile {
-    int id;
-    SDL_FRect src; // Position in the tile atlas
-} Tile;
-
-typedef struct TileMap {
-    Tile tiles[MAX_TILES_Y][MAX_TILES_X];
+typedef struct TileMap
+{
     int width, height;
-    Texture* atlas;
+    int tile_width, tile_height;
+    int* tiles;
+    int tile_count;
+    Texture texture;
+
 } TileMap;
 
-void init_tilemap(TileMap* map, Texture *atlas, int width, int height);
-void draw_tilemap(TileMap* map, Window* window);
-void set_tile(TileMap* map, int x, int y, int tile_id);
+TileMap* load_tmx(const char* path);
+Texture* load_tileset(const char* path, Window *window);
+void render_tilemap(TileMap* map, Window *window);
+
+
 
 #endif
