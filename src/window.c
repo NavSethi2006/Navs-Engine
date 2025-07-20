@@ -18,6 +18,8 @@ void create_window(Window *window, const char* title,int width, int height) {
         SDL_DestroyWindow(window->window);
         return;
     }
+     
+    
 
     // Set renderer draw color to white
 }

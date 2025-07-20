@@ -5,17 +5,26 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "../tilemap.h"
 #include <SDL3/SDL_image.h>
 #include <SDL3/SDL.h>
 
-typedef struct Asset {
+typedef struct Asset_Texture {
     char *key;
     Texture texture;
-    struct Asset* next;
-} Asset;
+    struct Asset_Texture* next;
+} Asset_Texture;
+
+typedef struct Asset_Map {
+    char *key;
+    TileMap *map;
+    struct Asset_Map* next;
+} Asset_Map;
 
 void init_asset_manager(Window* window);
 Texture get_texture_asset(const char* file_path);
+TileMap *get_tilemap_asset(const char* file_path);
+
 void free_all_assets();
 
 #endif // ASSETS_H

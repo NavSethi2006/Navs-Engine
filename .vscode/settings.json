@@ -10,6 +10,7 @@
         "stb_image.h": "c",
         "scene.h": "c",
         "assets.h": "c",
-        "sdl_image.h": "c"
+        "sdl_image.h": "c",
+        "tilemap.h": "c"
     }
 }

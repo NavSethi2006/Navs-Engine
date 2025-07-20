@@ -3,6 +3,7 @@
 Texture tex;
 Animation_set *animations;
 Animation *animation;
+TileMap* map;
 
 Frame RUN_ANIMATION[3] = {{0, 33, 20, 31},
                                {20, 33, 20, 31},
@@ -54,6 +55,8 @@ void game() {
 
     PlayerStates = IDLE;
 
+    map = get_tilemap_asset("../src/assets/untitled.tmx");
+
 }
 
 
@@ -89,6 +92,7 @@ void game_update(float delta_time) {
 
 void game_render(Window *window) {
 
+//    render_tilemap(window, map);
     render_animation_set(animations, PlayerStates, window);
 
 }

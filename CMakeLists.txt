@@ -9,8 +9,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # Add source files
 file(GLOB SOURCES src/*.c)
 file (GLOB ASSETS src/assets/*.c)
+file(GLOB UTILS src/utils/*.c)
 
-add_executable(navsengine ${SOURCES} ${ASSETS})
+add_executable(navsengine ${SOURCES} ${ASSETS} ${UTILS})
 
 # Include SDL3 headers
 target_include_directories(navsengine PUBLIC ${CMAKE_SOURCE_DIR}/include/)

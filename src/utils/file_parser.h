@@ -7,10 +7,12 @@
 #include <string.h>
 #include <ctype.h>
 
-static char* read_file(const char* path);
-static char* find_tag(const char* xml, const char* tag);
-static int extract_attr_int(const char* tag, const char* attr);
-static char* extract_csv_data(const char* data_tag);
-static void parse_csv(const char* csv, int* tiles, int max);
+extern char* read_file(const char* path);
+extern char* find_tag(const char* xml, const char* tag);
+extern int extract_attr_int(const char* tag, const char* attr);
+extern float extract_attr_float(const char *tag, const char* attr);
+extern char* extract_csv_data(const char* data_tag);
+extern void parse_csv(const char* csv, int* tiles, int max);
+extern void extract_attr_string(const char* tag, const char* attr, char* dest, int max_len);
 
 #endif
