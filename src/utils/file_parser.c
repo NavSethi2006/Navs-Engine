@@ -18,15 +18,17 @@ char* read_file(const char* path) {
 }
 
 char* find_tag(const char* xml, const char* tag) {
+    if (!xml || !tag) return NULL;
+
+
     char search[64];
     snprintf(search, sizeof(search), "<%s", tag);
-    printf("shit : %s\n", search);
     return strstr(xml, search);
 }
 
 int extract_attr_int(const char* tag, const char* attr) {
     char* loc = strstr(tag, attr);
-    if (!loc) printf("Could NOT extract attribute for tag :%s ", tag);
+    if (!loc) printf("Could NOT extract int attribute for tag :%s ", tag);
 
     loc += strlen(attr) + 2; // skip attr="
     return atoi(loc);
@@ -34,12 +36,34 @@ int extract_attr_int(const char* tag, const char* attr) {
 
 float extract_attr_float(const char *tag, const char* attr) {
     const char* loc = strstr(tag, attr);
-    if (!loc) printf("Could NOT extract attribute for tag :%s ", tag);
+    if (!loc) printf("Could NOT extract float attribute for tag :%s ", tag);
 
 
     loc += strlen(attr) + 2;
     return atof(loc);
 }
+
+char* extract_attr(const char* tag, const char* attr_name) {
+    static char buffer[1024];  // used for snprintf pattern
+    snprintf(buffer, sizeof(buffer), "%s=\"", attr_name);
+
+    const char* start = strstr(tag, buffer);
+    if (!start) return NULL;
+
+    start += strlen(buffer);  // move past attr="
+
+    const char* end = strchr(start, '"');
+    if (!end) return NULL;
+
+    size_t len = end - start;
+    char* value = (char*)malloc(len + 1);
+    if (!value) return NULL;
+
+    strncpy(value, start, len);
+    value[len] = '\0';
+    return value;
+}
+
 
 void extract_attr_string(const char* tag, const char* attr, char* dest, int max_len) {
     const char* loc = strstr(tag, attr);

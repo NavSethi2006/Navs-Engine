@@ -46,7 +46,7 @@ Texture get_texture_asset(const char* file_path) {
     return texture;
 }
 
-
+/*
 TileMap *get_tilemap_asset(const char* map_path) {
     TileMap *map;
     // search cache
@@ -79,7 +79,7 @@ TileMap *get_tilemap_asset(const char* map_path) {
 
     return map;
 }
-
+*/
 
 /*
 void free_all_assets() {

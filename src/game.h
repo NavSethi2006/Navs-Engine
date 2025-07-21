@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "scene.h"
 #include "render.h"
+#include "tilemap.h"
 #include "assets/assets.h"
 
 void game();

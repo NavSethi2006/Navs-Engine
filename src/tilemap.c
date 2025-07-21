@@ -49,11 +49,16 @@ TileMap* load_tmx(const char* filepath) {
         char* obj = strstr(obj_group, "<object");
         while (obj && ol->object_count < 256) {
             MapObject *o = &ol->objects[ol->object_count++];
-            o->id = extract_attr_int(obj, "id");
+            if (strstr(obj, "<object ")) {
             o->x = extract_attr_float(obj, "x");
             o->y = extract_attr_float(obj, "y");
             o->width = extract_attr_float(obj, "width");
             o->height = extract_attr_float(obj, "height");
+            }
+            else if(strstr(obj, "<objectgroup ")) {
+                o->id = extract_attr_int(obj, "id");
+            }
+
             obj = strstr(obj + 1, "<object");
         }
 
@@ -65,18 +70,44 @@ TileMap* load_tmx(const char* filepath) {
     }
 }
 
-Texture* load_tileset(const char* path, Window *window) {
+void load_tileset_into_map(TileMap *map, const char* xml) {
+    Tileset tileset = {0};
 
+    // Find <tileset> tag
+    char* tileset_tag = strstr(xml, "<tileset");
+    if (!tileset_tag) {
+        fprintf(stderr, "No <tileset> found in TMX\n");
+        exit(1);
+    }
 
+    tileset.firstgid     = extract_attr_int(tileset_tag, "firstgid");
+    tileset.tile_width   = extract_attr_int(tileset_tag, "tilewidth");
+    tileset.tile_height  = extract_attr_int(tileset_tag, "tileheight");
+    tileset.tilecount    = extract_attr_int(tileset_tag, "tilecount");
+    tileset.columns      = extract_attr_int(tileset_tag, "columns");
+
+    // Find <image> tag within tileset
+    char* image_tag = strstr(tileset_tag, "<image");
+    if (!image_tag) {
+        fprintf(stderr, "No <image> in <tileset>\n");
+        exit(1);
+    }
+
+    const char* image_path =  extract_attr(image_tag, "source");
+    Texture tileset_texture = get_texture_asset(image_path);
+
+    tileset.image_width  = tileset_texture.width;
+    tileset.image_height = tileset_texture.height;
+    tileset.texture = &tileset_texture;
+
+    map->tileset = tileset;
 }
 
 
 void render_tilemap(Window *window, TileMap *map){
 
     Tileset *tileset = &map->tileset;
-    int tile_w = tileset->tile_width;
-    int tile_h = tileset->tile_height;
-    int cols = tileset->columns;
+    if(!tileset->texture) return;
 
     for(int i = 0; i < map->layer_count; i++) {
         TileLayer *layer = &map->layers[i];
@@ -94,17 +125,19 @@ void render_tilemap(Window *window, TileMap *map){
                 int flip_d = raw_gid & FLIPPED_DIAGONALLY;
 
                 uint32_t gid = raw_gid & GID_MASK;
-                int tile_index = gid - tileset->first_gid;
+                int tile_index = gid - tileset->firstgid;
 
-                int src_x = (tile_index % cols) * tile_w;
-                int src_y = (tile_index / cols) * tile_h;
+                int src_x = (tile_index % tileset->columns) * tileset->tile_width;
+                int src_y = (tile_index / tileset->columns) * tileset->tile_height;
 
-                SDL_FRect dst = { x * tile_w, y * tile_h, tile_w, tile_h };
-                SDL_FRect src = { src_x, src_y, tile_w, tile_h };
+                SDL_FRect dst = { x * tileset->tile_width, y * tileset->tile_height, tileset->tile_width, tileset->tile_height };
+                SDL_FRect src = { src_x, src_y, tileset->tile_width, tileset->tile_height };
 
                 SDL_FlipMode flip = SDL_FLIP_NONE;
                 if (flip_h) flip |= SDL_FLIP_HORIZONTAL;
                 if (flip_v) flip |= SDL_FLIP_VERTICAL;
+
+
 
                 SDL_RenderTextureRotated(window->renderer, tileset->texture->Image, &src, &dst, 0.0, NULL, flip);
             }

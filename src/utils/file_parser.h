@@ -9,6 +9,7 @@
 
 extern char* read_file(const char* path);
 extern char* find_tag(const char* xml, const char* tag);
+extern char* extract_attr(const char* tag, const char* attr_name);
 extern int extract_attr_int(const char* tag, const char* attr);
 extern float extract_attr_float(const char *tag, const char* attr);
 extern char* extract_csv_data(const char* data_tag);

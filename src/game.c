@@ -55,7 +55,9 @@ void game() {
 
     PlayerStates = IDLE;
 
-    map = get_tilemap_asset("../src/assets/untitled.tmx");
+    map = load_tmx("../src/assets/untitled.tmx");
+    load_tileset_into_map(map, "../src/assets/testtileset.tsx");
+
 
 }
 
@@ -92,7 +94,7 @@ void game_update(float delta_time) {
 
 void game_render(Window *window) {
 
-//    render_tilemap(window, map);
+    render_tilemap(window, map);
     render_animation_set(animations, PlayerStates, window);
 
 }

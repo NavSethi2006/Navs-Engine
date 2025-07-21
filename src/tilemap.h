@@ -1,10 +1,12 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
+#include "assets/assets.h"
 #include <SDL3/SDL.h>
 #include "window.h"
 #include "render.h"
 #include "utils/file_parser.h"
+
 
 
 #define FLIPPED_HORIZONTALLY 0x80000000
@@ -23,11 +25,9 @@ typedef struct TileLayer {
 } TileLayer;
 
 typedef struct Tileset {
-    int first_gid;
+    int firstgid;
     int tile_width, tile_height;
-    int tile_count;
-    int columns;
-    char image_path[256];
+    int columns, tilecount;
     int image_width, image_height;
 
     Texture* texture;
@@ -66,7 +66,7 @@ typedef struct TileMap
 
 
 TileMap* load_tmx(const char* path);
-Texture* load_tileset(const char* path, Window *window);
+void load_tileset_into_map(TileMap *map, const char* xml);
 void render_tilemap(Window *window, TileMap *map);
 void free_tilemap(TileMap* map);
 
