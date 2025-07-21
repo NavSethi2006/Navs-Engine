@@ -3,7 +3,8 @@
 Texture tex;
 Animation_set *animations;
 Animation *animation;
-TileMap* map;
+tmx_map *map;
+Texture background;
 
 Frame RUN_ANIMATION[3] = {{0, 33, 20, 31},
                                {20, 33, 20, 31},
@@ -37,6 +38,7 @@ enum PlayerStates {
 } PlayerStates;
 
 
+
 void game() {
 
     tex = get_texture_asset("../src/assets/player.png");
@@ -55,8 +57,12 @@ void game() {
 
     PlayerStates = IDLE;
 
-    map = load_tmx("../src/assets/untitled.tmx");
-    load_tileset_into_map(map, "../src/assets/testtileset.tsx");
+    map = tmx_load("../src/assets/untitled.tmx");
+    background = get_texture_asset("");
+
+    if(!map) {
+        perror("cannot load map");
+    }
 
 
 }
@@ -94,8 +100,8 @@ void game_update(float delta_time) {
 
 void game_render(Window *window) {
 
-    render_tilemap(window, map);
     render_animation_set(animations, PlayerStates, window);
+    render_map(window , map, &background);
 
 }
 

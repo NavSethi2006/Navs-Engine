@@ -46,40 +46,7 @@ Texture get_texture_asset(const char* file_path) {
     return texture;
 }
 
-/*
-TileMap *get_tilemap_asset(const char* map_path) {
-    TileMap *map;
-    // search cache
-     
-    Asset_Map* curr = map_asset;
-    while (curr) {
-        if (curr->key && strcmp(curr->key, map_path) == 0) {
-            printf("Not In cache\n");
-            return map;
-        }
-        curr = curr->next;
-    }
 
-    map = load_tmx(map_path);
-    if (!map) {
-        printf("Could not load : %s\n", map_path);
-        return map;
-    }
-
-    Asset_Map* newAsset = malloc(sizeof(Asset_Map));
-    if (!newAsset) {
-        printf("Memory allocation failed for Asset\n");
-        return map;
-    }
-
-    newAsset->key = strdup(map_path);
-    newAsset->map = map;
-    newAsset->next = map_asset;
-    map_asset = newAsset;
-
-    return map;
-}
-*/
 
 /*
 void free_all_assets() {

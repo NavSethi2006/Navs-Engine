@@ -22,7 +22,6 @@ typedef struct Asset_Map {
 
 void init_asset_manager(Window* window);
 Texture get_texture_asset(const char* file_path);
-//TileMap *get_tilemap_asset(const char* file_path);
 
 void free_all_assets();
 

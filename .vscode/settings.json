@@ -11,6 +11,8 @@
         "scene.h": "c",
         "assets.h": "c",
         "sdl_image.h": "c",
-        "tilemap.h": "c"
+        "tilemap.h": "c",
+        "tmx.h": "c",
+        "stdint.h": "c"
     }
 }

@@ -9,6 +9,7 @@
 #include "render.h"
 #include "tilemap.h"
 #include "assets/assets.h"
+#include "tmx/tmx.h"
 
 void game();
 void game_handle_event(SDL_Event *event);
