@@ -6,16 +6,24 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Find SDL3
 
+find_package(LibXml2 REQUIRED)
+find_package(ZLIB REQUIRED)
+
 # Add source files
 file(GLOB SOURCES src/*.c)
 file (GLOB ASSETS src/assets/*.c)
 file(GLOB UTILS src/utils/*.c)
 file(GLOB TMX src/tmx/*.c)
 
+
+
 add_executable(navsengine ${SOURCES} ${ASSETS} ${UTILS} ${TMX})
 
 # Include SDL3 headers
 target_include_directories(navsengine PUBLIC ${CMAKE_SOURCE_DIR}/include/)
+target_link_libraries(navsengine PUBLIC LibXml2::LibXml2)
+
+target_link_libraries(navsengine PUBLIC ZLIB::ZLIB)
 
 # Platform-specific settings
 if (WIN32)

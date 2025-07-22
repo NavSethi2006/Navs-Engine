@@ -1,6 +1,7 @@
 #include "game.h"
 
 Texture tex;
+Texture tileset;
 Animation_set *animations;
 Animation *animation;
 tmx_map *map;
@@ -56,13 +57,21 @@ void game() {
     animations->texture = &tex;
 
     PlayerStates = IDLE;
+    
 
-    map = tmx_load("../src/assets/untitled.tmx");
-    background = get_texture_asset("");
+    tmx_img_load_func = (void*(*)(const char*))map_texture_loader;
+    tmx_img_free_func = (void (*)(void*))SDL_DestroyTexture;
+
+    map = load_tmx_map("../src/assets/untitled.tmx");
+    
+    tileset = get_texture_asset("../src/assets/spelunky_shop.png");
+
 
     if(!map) {
         perror("cannot load map");
     }
+
+
 
 
 }
@@ -99,10 +108,10 @@ void game_update(float delta_time) {
 }
 
 void game_render(Window *window) {
+    
+    render_tmx_map(window , map, 0, 0);
 
     render_animation_set(animations, PlayerStates, window);
-    render_map(window , map, &background);
-
 }
 
 

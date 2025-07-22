@@ -17,7 +17,6 @@ Texture get_texture_asset(const char* file_path) {
     Asset_Texture* curr = texture_assets;
     while (curr) {
         if (curr->key && strcmp(curr->key, file_path) == 0) {
-            printf("Not In cache\n");
             return curr->texture;
         }
         curr = curr->next;
@@ -28,14 +27,12 @@ Texture get_texture_asset(const char* file_path) {
     texture.Image = IMG_LoadTexture(renderer, file_path);
     if (!texture.Image) {
         printf("Failed to load texture '%s': %s\n", file_path, SDL_GetError());
-        return texture;
     }
 
     // Add to cache
     Asset_Texture* newAsset = malloc(sizeof(Asset_Texture));
     if (!newAsset) {
         printf("Memory allocation failed for Asset\n");
-        return texture;
     }
 
     newAsset->key = strdup(file_path);
@@ -44,6 +41,10 @@ Texture get_texture_asset(const char* file_path) {
     texture_assets = newAsset;
 
     return texture;
+}
+
+SDL_Renderer *get_renderer() {
+    return renderer;
 }
 
 

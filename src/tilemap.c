@@ -1,124 +1,135 @@
 #include "tilemap.h"
 
-tmx_map *load_tilemap(const char* path) {
-    return tmx_load(path);
+void* map_texture_loader(const char *path) {
+	SDL_Log("TMX requests: %s", path);
+	Texture tex = get_texture_asset(path);
+	return (void*)tex.Image; // SDL_Texture* as void*
 }
 
-
-
-void draw_polyline(Window *window, double **points, double x, double y, int pointsc) {
-    int i;
-    for(i=1; 1 < pointsc; i++) {
-        SDL_RenderLine(window->renderer,x+points[0][0], y+points[0][1], x+points[pointsc-1][0], y+points[pointsc-1][1]);
-    }
-}
-
-void draw_polygon(Window *window,double **points, double x, double y, int pointsc) {
-    draw_polyline(window,points, x, y, pointsc);
-	if (pointsc > 2) {
-		SDL_RenderLine(window->renderer, x+points[0][0], y+points[0][1], x+points[pointsc-1][0], y+points[pointsc-1][1]);
+// Load TMX map
+tmx_map* load_tmx_map(const char *path) {
+	tmx_map *map = tmx_load(path);
+	if (!map) {
+		fprintf(stderr, "TMX Load Error: %s\n", tmx_strerr());
 	}
+	SDL_Log("Loaded Map %s", path);
+	return map;
 }
 
-void draw_objects(Window *window,tmx_object_group *objgr) {
-    SDL_FRect rect;
-	tmx_object *head = objgr->head;
-	while (head) {
-		if (head->visible) {
-			if (head->obj_type == OT_SQUARE) {
-				rect.x =     head->x;  rect.y =      head->y;
-				rect.w = head->width;  rect.h = head->height;
-				SDL_RenderRect(window->renderer, &rect);
-			}
-			else if (head->obj_type  == OT_POLYGON) {
-				draw_polygon(window ,head->content.shape->points, head->x, head->y, head->content.shape->points_len);
-			}
-			else if (head->obj_type == OT_POLYLINE) {
-				draw_polyline(window ,head->content.shape->points, head->x, head->y, head->content.shape->points_len);
-			}
-			else if (head->obj_type == OT_ELLIPSE) {
-				/* FIXME: no function in SDL2 */
-			}
-		}
-		head = head->next;
-	}
+SDL_Color tmx_to_sdl_color(unsigned int color) {
+	SDL_Color c;
+	c.a = (color >> 24) & 0xFF;
+	c.b = (color >> 16) & 0xFF;
+	c.g = (color >> 8) & 0xFF;
+	c.r = (color) & 0xFF;
+	return c;
 }
 
-void draw_tile(Window *window,Texture *image, unsigned int sx, unsigned int sy, unsigned int sw, unsigned int sh,
-               unsigned int dx, unsigned int dy, float opacity, unsigned int flags) {
-    SDL_Rect src_rect, dest_rect;
-	src_rect.x = sx;
-	src_rect.y = sy;
-	src_rect.w = dest_rect.w = sw;
-	src_rect.h = dest_rect.h = sh;
-	dest_rect.x = dx;
-	dest_rect.y = dy;
-	SDL_RenderTexture(window->renderer, image->Image, (SDL_FRect*)&src_rect, (SDL_FRect*)&dest_rect);
+// Draw a single tile at world position + offset
+void draw_tile(Window *window, tmx_tile *tile, int x, int y, float offset_x, float offset_y) {
+	if (!tile || !tile->tileset || !tile->tileset->image)
+		return;
 
+	SDL_Texture *texture = (SDL_Texture*)tile->tileset->image->resource_image;
+	int tw = tile->tileset->tile_width;
+	int th = tile->tileset->tile_height;
+
+	SDL_FRect dest = {
+		.x = x + offset_x,
+		.y = y + offset_y,
+		.w = tw,
+		.h = th
+	};
+
+	SDL_FRect src = { tile->ul_x, tile->ul_y, tw, th };
+	SDL_RenderTexture(window->renderer, texture, &src, &dest);
 }
 
-void draw_layer(Window *window,tmx_map *map, tmx_layer *layer) {
-	unsigned long i, j;
-	unsigned int gid, x, y, w, h, flags;
-	float op;
-	tmx_tileset *ts;
-	tmx_image *im;
-	void* image;
-	op = layer->opacity;
-	for (i=0; i<map->height; i++) {
-		for (j=0; j<map->width; j++) {
-			gid = (layer->content.gids[(i*map->width)+j]) & TMX_FLIP_BITS_REMOVAL;
-			if (map->tiles[gid] != NULL) {
-				ts = map->tiles[gid]->tileset;
-				im = map->tiles[gid]->image;
-				x  = map->tiles[gid]->ul_x;
-				y  = map->tiles[gid]->ul_y;
-				w  = ts->tile_width;
-				h  = ts->tile_height;
-				if (im) {
-					image = im->resource_image;
-				}
-				else {
-					image = ts->image->resource_image;
-				}
-				flags = (layer->content.gids[(i*map->width)+j]) & ~TMX_FLIP_BITS_REMOVAL;
-				draw_tile(window ,image, x, y, w, h, j*ts->tile_width, i*ts->tile_height, op, flags);
+// Render tile layers with offset
+void render_tile_layer(Window *window, tmx_map *map, tmx_layer *layer, float offset_x, float offset_y) {
+	for (unsigned long y = 0; y < map->height; y++) {
+		for (unsigned long x = 0; x < map->width; x++) {
+			unsigned int gid = layer->content.gids[y * map->width + x];
+			gid &= TMX_FLIP_BITS_REMOVAL;
+
+			if (gid) {
+				draw_tile(
+					window,
+					map->tiles[gid],
+					x * map->tile_width,
+					y * map->tile_height,
+					offset_x,
+					offset_y
+				);
 			}
 		}
 	}
 }
 
+// Render image layer with offset
+void render_image_layer(Window *window, tmx_layer *layer, float offset_x, float offset_y) {
+	if (!layer->content.image) return;
+	SDL_Texture *tex = (SDL_Texture*)layer->content.image->resource_image;
 
-void draw_image_layer(Window *window,Texture *texture) {
-	SDL_Rect dim;
-	dim.x = dim.y = 0;
+	SDL_FRect dest = {
+		.x = layer->offsetx + offset_x,
+		.y = layer->offsety + offset_y,
+		.w = (float)layer->content.image->width,
+		.h = (float)layer->content.image->height
+	};
 
-	render_texture(texture, window);
+	SDL_RenderTexture(window->renderer, tex, NULL, &dest);
 }
 
-void draw_all_layers(Window *window, tmx_map *map, tmx_layer *layers, Texture *texture) {
-	while (layers) {
-		if (layers->visible) {
-
-			if (layers->type == L_GROUP) {
-				draw_all_layers(window ,map, layers->content.group_head, texture);
-			}
-			else if (layers->type == L_OBJGR) {
-				draw_objects(window,layers->content.objgr);
-			}
-			else if (layers->type == L_IMAGE) {
-				draw_image_layer(window, texture);
-			}
-			else if (layers->type == L_LAYER) {
-				draw_layer(window ,map, layers);
-			}
+// Render object layer with offset
+void render_object_layer(Window *window, tmx_object_group *group, float offset_x, float offset_y) {
+	tmx_object *obj = group->head;
+	while (obj) {
+		if (obj->visible && obj->obj_type == OT_SQUARE) {
+			SDL_FRect rect = {
+				.x = obj->x + offset_x,
+				.y = obj->y + offset_y,
+				.w = obj->width,
+				.h = obj->height
+			};
+			SDL_RenderRect(window->renderer, &rect);
 		}
-		layers = layers->next;
+		obj = obj->next;
 	}
 }
 
-void render_map(Window* window,tmx_map *map, Texture *background) {
-    draw_all_layers(window, map, map->ly_head, background);
+// Recursively render layers with offset
+void render_layers(Window *window, tmx_map *map, tmx_layer *layer, float offset_x, float offset_y) {
+	while (layer) {
+		if (!layer->visible) {
+			layer = layer->next;
+			continue;
+		}
+
+		switch (layer->type) {
+			case L_LAYER:
+				render_tile_layer(window, map, layer, offset_x, offset_y);
+				break;
+			case L_IMAGE:
+				render_image_layer(window, layer, offset_x, offset_y);
+				break;
+			case L_OBJGR:
+				render_object_layer(window, layer->content.objgr, offset_x, offset_y);
+				break;
+			case L_GROUP:
+				render_layers(window, map, layer->content.group_head, offset_x, offset_y);
+				break;
+		}
+		layer = layer->next;
+	}
 }
 
+// Render full map at a given offset
+void render_tmx_map(Window *window, tmx_map *map, float offset_x, float offset_y) {
+	render_layers(window, map, map->ly_head, offset_x, offset_y);
+}
 
+// Free map
+void free_tmx_map(tmx_map *map) {
+	tmx_map_free(map);
+}

@@ -22,6 +22,7 @@ typedef struct Asset_Map {
 
 void init_asset_manager(Window* window);
 Texture get_texture_asset(const char* file_path);
+SDL_Renderer *get_renderer();
 
 void free_all_assets();
 
