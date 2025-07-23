@@ -1,3 +1,4 @@
+
 # Navs Engine
 
 A minimal lightweight engine that uses SDL3 to display graphics, animation, physics, tilemaps and more
@@ -51,7 +52,6 @@ sh build.sh
 ```
 
 Its only an executable for now just for testing. However i will make this engine build into a shared library
-
 
 
 
