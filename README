@@ -1,4 +1,4 @@
-#Navs Engine
+# Navs Engine
 
 A minimal lightweight engine that uses SDL3 to display graphics, animation, physics, tilemaps and more
 
@@ -7,16 +7,16 @@ A minimal lightweight engine that uses SDL3 to display graphics, animation, phys
 Some dependencies are needed, only the include folder, if your building on windows i'd recommend you use MinGW,
 for some unix-like commands.
 
-[SDL3](https://github.com/libsdl-org/SDL)
-[SDL_Image](https://github.com/libsdl-org/SDL_image)
-[TMX Loader](https://github.com/baylej/tmx) Already in repo
+![SDL3](https://github.com/libsdl-org/SDL)
+![SDL_Image](https://github.com/libsdl-org/SDL_image)
+![TMX Loader](https://github.com/baylej/tmx) Already in repo
 
 clone those in some way or another. if your too lazy to think yourself follow the commands, otherwise just copy the include
 folders from these repos and make a new "include" folder in the directory /Navs-Engine/
 
 ## Windows
 
-```Bash
+```bash
 
 mkdir Navs-Engine/include
 git clone https://github.com/libsdl-org/SDL
@@ -35,7 +35,7 @@ Not a fan of windows but thankfully CMake exists
 
 ## Linux
 
-```Bash
+```bash
 
 mkdir Navs-Engine/include
 git clone https://github.com/libsdl-org/SDL
