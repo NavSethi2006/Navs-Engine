@@ -1,7 +1,6 @@
 #include "tilemap.h"
 
 void* map_texture_loader(const char *path) {
-	SDL_Log("TMX requests: %s", path);
 	Texture tex = get_texture_asset(path);
 	return (void*)tex.Image; // SDL_Texture* as void*
 }
@@ -12,7 +11,6 @@ tmx_map* load_tmx_map(const char *path) {
 	if (!map) {
 		fprintf(stderr, "TMX Load Error: %s\n", tmx_strerr());
 	}
-	SDL_Log("Loaded Map %s", path);
 	return map;
 }
 

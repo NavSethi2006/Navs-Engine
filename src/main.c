@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     Window window;
     SDL_Event event;
 
-    create_window(&window, "Online Pong", 1600, 800);
+    create_window(&window, "navsengine", 1600, 800);
 
     init_asset_manager(&window);
 
