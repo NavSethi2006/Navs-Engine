@@ -26,7 +26,6 @@ target_include_directories(navsengine PUBLIC ${CMAKE_SOURCE_DIR}/include/)
 # Platform-specific settings
 if (WIN32)
 
-    # 2. Ask pkg-config for libxml2
     target_link_libraries(navsengine PUBLIC
     ${CMAKE_SOURCE_DIR}/lib/win/libtmx.a
     ${CMAKE_SOURCE_DIR}/lib/win/libxml2.a

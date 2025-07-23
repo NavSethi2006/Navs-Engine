@@ -47,13 +47,10 @@ SDL_Renderer *get_renderer() {
     return renderer;
 }
 
-
-
-/*
 void free_all_assets() {
-    Asset* curr = assets;
+    Asset_Texture* curr = texture_assets;
     while (curr) {
-        Asset* next = curr->next;
+        Asset_Texture* next = curr->next;
         SDL_DestroyTexture(curr->texture.Image);
         curr->texture.height = 0;
         curr->texture.width = 0;
@@ -65,4 +62,3 @@ void free_all_assets() {
     }
     assets = NULL;
 }
-*/
