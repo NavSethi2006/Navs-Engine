@@ -13,6 +13,8 @@
         "sdl_image.h": "c",
         "tilemap.h": "c",
         "tmx.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "any": "c",
+        "viewport.h": "c"
     }
 }

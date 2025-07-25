@@ -60,5 +60,5 @@ void free_all_assets() {
         free(curr);
         curr = next;
     }
-    assets = NULL;
+    texture_assets = NULL;
 }

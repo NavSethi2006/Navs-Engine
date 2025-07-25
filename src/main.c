@@ -9,6 +9,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <stdio.h>
+#include "viewport.h"
 #include "window.h"
 #include "scene.h"
 #include "game.h"

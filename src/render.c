@@ -1,6 +1,10 @@
 #include "render.h"
 
+static Viewport *viewport_rect;
 
+void set_render_viewport(Viewport *vp) {
+    viewport_rect = vp;
+}
 
 void set_texture(Texture *texture,int x, int y, int width, int height) {
     texture->x = x;
@@ -14,16 +18,28 @@ void render_texture(Texture *texture, Window *window) {
 }
 
 void render_texture_with_rect(Texture *texture, Window *window, Frame *frame) {
-    SDL_FRect texture_rect = { (float)texture->x, (float)texture->y, (float)texture->width, (float)texture->height};
+    SDL_FRect texture_rect = { ((float)texture->x - viewport_rect->x) * viewport_rect->zoom, 
+                                ((float)texture->y - viewport_rect->y) * viewport_rect->zoom, 
+                                (float)texture->width * viewport_rect->zoom, 
+                                (float)texture->height * viewport_rect->zoom};
     SDL_FRect dst_rect = { (float)frame->x, (float)frame->y, (float)frame->width, (float)frame->height };
 
-    if(SDL_RenderTexture(window->renderer, texture->Image, &dst_rect, &texture_rect)) {
-        printf("Rendering successfully: %s\n", SDL_GetError());
-    }else {
-        printf("Error Rendering: %s\n", SDL_GetError());
-    }
+    SDL_RenderTexture(window->renderer, texture->Image, &dst_rect, &texture_rect);
+ 
 }
 
+
+void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcrect, SDL_FRect *dstrect ) {
+    SDL_FRect newrect = {(dstrect->x - viewport_rect->x) * viewport_rect->zoom,
+                (dstrect->y - viewport_rect->y) * viewport_rect->zoom,
+                dstrect->w * viewport_rect->zoom,
+                dstrect->h * viewport_rect->zoom
+            };
+
+
+
+    SDL_RenderTexture(window->renderer, texture->Image, srcrect, &newrect);
+}
 
 Animation* init_animation(Frame *frames,int frame_count, float switch_time) {
     Animation *animation = malloc(sizeof(Animation));
@@ -51,11 +67,14 @@ void update_animation(Animation *animation, float delta_time) {
 }
 
 void render_animation(Animation *animation, Window *window, Texture *texture) {   
-    Frame *frame = &animation->frames[animation->current_frame];
-    
-    SDL_FRect dest = { texture->x, texture->y, texture->width, texture->height };
-
+    Frame *frame = &animation->frames[animation->current_frame];   
+    SDL_FRect dest = { (texture->x - viewport_rect->x) * viewport_rect->zoom, 
+                        (texture->y - viewport_rect->y) * viewport_rect->zoom,
+                        texture->width * viewport_rect->zoom,
+                        texture->height * viewport_rect->zoom };
     SDL_FRect src = { frame->x, frame->y, frame->width, frame->height };
+
+    printf("Rendering texture at: x: %f, y: %f, w: %f, h: %f\n", dest.x, dest.y, dest.w, dest.h);
 
     SDL_RenderTexture(window->renderer, texture->Image, &src, &dest);
 }
