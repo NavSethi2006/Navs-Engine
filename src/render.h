@@ -52,6 +52,7 @@
  
 /**
  * @brief Set the SDL rendering viewport to a given Viewport.
+ *  THIS MUST BE SET BEFORE YOUR RENDER ANYTHING
  * @param vp Pointer to the Viewport to set as active.
  */
 void set_render_viewport(Viewport *vp);

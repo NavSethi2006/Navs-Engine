@@ -72,10 +72,10 @@ void render_image_layer(Window *window, TileMap *map) {
     SDL_Texture *tex = (SDL_Texture*)map->layer->content.image->resource_image;
 
     SDL_FRect dest = {
-        .x = map->x + (map->layer->offsetx * map->scale),  // Scaled offset
-        .y = map->y + (map->layer->offsety * map->scale),
-        .w = map->layer->content.image->width * map->scale,  // Scaled size
-        .h = map->layer->content.image->height * map->scale
+        .x = map->x + map->layer->offsetx,
+        .y = map->y + map->layer->offsety,
+        .w = map->layer->content.image->width,
+        .h = map->layer->content.image->height
     };
 
     SDL_RenderTexture(window->renderer, tex, NULL, &dest);
@@ -86,10 +86,10 @@ void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) 
     while (obj) {
         if (obj->visible && obj->obj_type == OT_SQUARE) {
             SDL_FRect rect = {
-                .x = map->x + (obj->x * map->scale),  // Scaled position
-                .y = map->y + (obj->y * map->scale),
-                .w = obj->width * map->scale,         // Scaled size
-                .h = obj->height * map->scale
+                .x = map->x + obj->x ,
+                .y = map->y + obj->y ,
+                .w = obj->width,
+                .h = obj->height
             };
             if(map->Debug_lines) {
                 SDL_RenderRect(window->renderer, &rect);

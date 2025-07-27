@@ -44,7 +44,7 @@ enum PlayerStates {
 
 void game() {
 
-    vp = viewport_init(500, 0, 1600, 800, 1);
+    vp = viewport_init(500, 0, 1600, 800, 3);
 
     set_render_viewport(vp);
 

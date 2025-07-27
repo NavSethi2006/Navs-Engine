@@ -24,7 +24,6 @@
      Viewport *vp;             /**< Camera/viewport used for rendering. */
      bool Debug_lines;         /**< Whether to draw debug outlines for objects. */
      int x, y;                 /**< Base position of the map in world space. */
-     int scale;                /**< Global scale applied to tiles. */
  } TileMap;
  
  /**

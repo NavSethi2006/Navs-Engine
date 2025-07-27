@@ -68,7 +68,6 @@ int main(int argc, char* argv[]) {
 
     Uint64 last_ticks = SDL_GetTicks();
 
-
     while(gameloop) {
 
 
