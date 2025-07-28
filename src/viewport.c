@@ -35,3 +35,15 @@ bool camera_cull_rect(Viewport *vp, SDL_FRect world_rect) {
            world_rect.x > view.x + view.w ||
            world_rect.y > view.y + view.h;
 }
+
+void free_viewport(Viewport *vp) {
+    if (vp) {
+        vp->x = 0;
+        vp->y = 0;
+        vp->width = 0;
+        vp->height = 0;
+        vp->zoom = 0;
+        free(vp);
+    }
+}
+

@@ -1,13 +1,23 @@
 #ifndef ASSETS_H
 #define ASSETS_H
 
-#include "../render.h"
+#include "../window.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <SDL3/SDL_image.h>
 #include <SDL3/SDL.h>
+
+ /**
+  * @struct Texture
+  * @brief Represents a drawable image and its size/position in world space.
+  */
+ typedef struct Texture {
+    SDL_Texture* Image; /**< SDL texture image. */
+    float x, y;          /**< World-space position. */
+    float width, height; /**< World-space dimensions. */
+} Texture;
 
 typedef struct Asset_Texture {
     char *key;

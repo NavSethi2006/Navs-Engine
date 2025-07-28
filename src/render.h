@@ -9,16 +9,9 @@
  #include <SDL3/SDL.h>
  #include "window.h"
  #include "viewport.h"
+ #include "assets/assets.h"
  
- /**
-  * @struct Texture
-  * @brief Represents a drawable image and its size/position in world space.
-  */
- typedef struct Texture {
-     SDL_Texture* Image; /**< SDL texture image. */
-     float x, y;          /**< World-space position. */
-     float width, height; /**< World-space dimensions. */
- } Texture;
+
  
  /**
   * @struct Frame
@@ -47,6 +40,7 @@
   */
  typedef struct Animation_set {
      Texture *texture;    /**< The texture shared across animations. */
+     int animation_count; /** < The count of animations. */
      Animation *animations[]; /**< Array of animations for different states. */
  } Animation_set;
  
@@ -92,6 +86,13 @@ void render_texture_with_rect(Texture *texture, Window *window, Frame* frame);
 void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcrect, SDL_FRect *dstrect);
 
 /**
+ * @brief Initialize an animation set with a specified number of animations.
+ * @param animation_count Number of animations in the set.
+ * @return Pointer to the newly created Animation_set.
+ */
+Animation_set* init_animation_set(const char* tex_path,int animation_count, float x, float y, float width, float height);
+
+/**
  * @brief Initialize an animation with a set of frames.
  * @param frames Pointer to array of Frame structs.
  * @param frame_count Number of frames in the array.
@@ -132,5 +133,12 @@ void update_animation_set(Animation_set *animations, int current_state, float de
 void render_animation_set(Animation_set *animations, int current_state, Window *window);
 
  
+/**
+ * @brief Free the memory allocated for an Animation.
+ * @param animation pointer to the animation to free.
+ * 
+ */
+void free_animation(Animation *animation);
+
  #endif // RENDER_H
  

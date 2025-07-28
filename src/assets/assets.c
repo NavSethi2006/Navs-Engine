@@ -8,8 +8,6 @@ void init_asset_manager(Window* window) {
     renderer = window->renderer;
 }
 
-
-
 Texture get_texture_asset(const char* file_path) {
     Texture texture = {0};  // Zero initialize
 

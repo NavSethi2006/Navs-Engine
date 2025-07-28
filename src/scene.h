@@ -17,7 +17,8 @@
      void (*init)(void);                              /**< Called when the scene starts. */
      void (*handle_event)(SDL_Event *event);          /**< Handles input events. */
      void (*update)(float delta_time);                /**< Updates scene logic. */
-     void (*render)(Window *window);                  /**< Renders the scene to the screen. */
+     void (*render)(Window *window);    
+     void (*free) (void);              /**< Renders the scene to the screen. */
  } Scene;
  
  /** Pointer to the currently active scene. */

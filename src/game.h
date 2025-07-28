@@ -16,6 +16,7 @@ void game();
 void game_handle_event(SDL_Event *event);
 void game_update(float delta_time);
 void game_render(Window *window);
+void game_free();
 Scene *get_game_scene(); 
 
 extern Scene Game_Scene;

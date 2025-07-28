@@ -106,6 +106,10 @@ int main(int argc, char* argv[]) {
         SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
 
     }
+   
+    if (CURRENT_SCENE && CURRENT_SCENE->free) {
+        CURRENT_SCENE->free();
+    }
 
     return 0;
 }

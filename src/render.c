@@ -41,6 +41,18 @@ void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcr
     SDL_RenderTexture(window->renderer, texture->Image, srcrect, &newrect);
 }
 
+Animation_set* init_animation_set(const char* tex_path,int animation_count, float x, float y, float width, float height) {
+    Animation_set *animations = malloc(sizeof(Animation_set));
+    Texture tex = get_texture_asset(tex_path);
+    tex.x = x;
+    tex.y = y;
+    tex.width = width;
+    tex.height = height;
+    animations->texture = &tex;
+    animations->animation_count = animation_count;
+}
+
+
 Animation* init_animation(Frame *frames,int frame_count, float switch_time) {
     Animation *animation = malloc(sizeof(Animation));
     animation->switch_time = switch_time;
@@ -85,6 +97,29 @@ void update_animation_set(Animation_set *animations, int current_state,float del
 
 void render_animation_set(Animation_set *animations, int current_state,Window *window) {
     render_animation(animations->animations[current_state], window, animations->texture);
+}
+
+void free_animation(Animation *animation) {
+    if (animation) {
+        
+        free(animation->frames);
+        animation->frames = NULL;
+
+        free(animation);
+        animation = NULL;
+    }
+}
+
+void free_animation_set(Animation_set *animation) {
+    if (animation) {
+        for (int i = 0; i < animation->animation_count; i++) {
+            free_animation(animation->animations[i]);
+        }
+        free(animation->texture);
+        animation->texture = NULL;
+        free(animation);
+        animation = NULL;
+    }
 }
 
 

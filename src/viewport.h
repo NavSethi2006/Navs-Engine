@@ -60,5 +60,14 @@ SDL_FRect viewport_world_to_screen(Viewport *vp, SDL_FRect world_rect);
  * @return true if the rectangle is outside the viewport; false if visible.
  */
 bool camera_cull_rect(Viewport *vp, SDL_FRect world_rect);
+
+
+/**
+ * @brief Frees the viewport and its resources. Should usally be called when switching scenes or exiting the game.
+ * @param vp Pointer to the Viewport to free.
+ * 
+ */
+void free_viewport(Viewport *vp);
+
  
  #endif

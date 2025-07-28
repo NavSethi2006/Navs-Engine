@@ -140,6 +140,16 @@ void free_tmx_map(TileMap *map) {
         map->map = NULL;
     }
 
+    free(map->layer);
+    free(map->tiles);
+    free(map->tileset.Image);
+    free(map->vp);
+
+    map->layer = NULL;
+    map->tiles = NULL;
+    map->tileset.Image = NULL;
+    map->vp = NULL;
+
     free(map);
 	
 }

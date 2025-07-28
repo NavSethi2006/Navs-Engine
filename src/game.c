@@ -44,21 +44,19 @@ enum PlayerStates {
 
 void game() {
 
-    vp = viewport_init(500, 0, 1600, 800, 3);
+    vp = viewport_init(500, 0, 1600, 800, 1);
 
     set_render_viewport(vp);
 
-    tex = get_texture_asset("../src/assets/player.png");
-
     set_texture(&tex, 20, 20, 30, 55);
 
-    animations = malloc(sizeof(Animation_set));
+    animations = init_animation_set("../src/assets/player.png", 5, 0, 0, 20, 31);
+
     animations->animations[IDLE] = init_animation(IDLE_ANIMATION, 1, 0.2f);
     animations->animations[RUN] = init_animation(RUN_ANIMATION, 3, 0.2f);
     animations->animations[JUMP] = init_animation(JUMP_ANIMATION, 5, 0.1f);
     animations->animations[ATTACK] = init_animation(ATTACK_ANIMATION, 4, 0.1f);
     animations->animations[WALL_CLIMB] = init_animation(WALL_CLIMB_ANIMATION, 4, 0.1f);
-    animations->texture = &tex;
     PlayerStates = IDLE;
 
     tmx_img_load_func = (void*(*)(const char*))map_texture_loader;
@@ -118,8 +116,10 @@ void game_render(Window *window) {
     vp->x -= 10;
 }
 
-void free_game() {
+void game_free() {
+    free_viewport(vp);
     free_tmx_map(tilemap);
+
 }
 
 
@@ -127,7 +127,8 @@ Scene Game_Scene = {
     .init  = game,
     .handle_event = game_handle_event,
     .update = game_update,
-    .render = game_render
+    .render = game_render,
+    .free = game_free,
 };
 
 Scene *get_game_scene() {
