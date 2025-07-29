@@ -48,9 +48,9 @@ void game() {
 
     set_render_viewport(vp);
 
-    set_texture(&tex, 20, 20, 30, 55);
+    tex = get_texture_asset("../src/assets/player.png");
 
-    animations = init_animation_set("../src/assets/player.png", 5, 0, 0, 20, 31);
+    animations = init_animation_set(&tex, 5, 0, 0, 40, 51);
 
     animations->animations[IDLE] = init_animation(IDLE_ANIMATION, 1, 0.2f);
     animations->animations[RUN] = init_animation(RUN_ANIMATION, 3, 0.2f);
@@ -72,17 +72,13 @@ void game_handle_event(SDL_Event *event) {
     if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_ESCAPE) {
         switch_scene(get_menu_scene());
     }
-
     if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_W) {
         PlayerStates = RUN;
         viewport_move(vp, 0, -20);
-
-
     }
     if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_S) {
         PlayerStates = IDLE;
         viewport_move(vp, 0, 20);
-
     }
     if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_SPACE) {
         PlayerStates = JUMP;
@@ -90,15 +86,11 @@ void game_handle_event(SDL_Event *event) {
     if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_A) {
         PlayerStates = ATTACK;
         viewport_move(vp, -20, 0);
-
-
     }
     if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_D) {
         PlayerStates = WALL_CLIMB;
         viewport_move(vp, 20, 0);
     }
-
-
 }
 
 void game_update(float delta_time) {

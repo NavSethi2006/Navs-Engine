@@ -87,10 +87,15 @@ void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcr
 
 /**
  * @brief Initialize an animation set with a specified number of animations.
+ * @param texture Pointer to loaded texture.
  * @param animation_count Number of animations in the set.
+ * @param x x coordinate for this animation set
+ * @param y y coordinate for this animation set
+ * @param width width of the animation set
+ * @param height height of the animation set
  * @return Pointer to the newly created Animation_set.
  */
-Animation_set* init_animation_set(const char* tex_path,int animation_count, float x, float y, float width, float height);
+Animation_set* init_animation_set(Texture *texture, int animation_count, float x, float y, float width, float height);
 
 /**
  * @brief Initialize an animation with a set of frames.

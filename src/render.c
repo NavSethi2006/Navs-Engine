@@ -18,6 +18,7 @@ void render_texture(Texture *texture, Window *window) {
 }
 
 void render_texture_with_rect(Texture *texture, Window *window, Frame *frame) {
+
     SDL_FRect texture_rect = { ((float)texture->x - viewport_rect->x) * viewport_rect->zoom, 
                                 ((float)texture->y - viewport_rect->y) * viewport_rect->zoom, 
                                 (float)texture->width * viewport_rect->zoom, 
@@ -36,20 +37,19 @@ void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcr
                 dstrect->h * viewport_rect->zoom
             };
 
-
-
     SDL_RenderTexture(window->renderer, texture->Image, srcrect, &newrect);
 }
 
-Animation_set* init_animation_set(const char* tex_path,int animation_count, float x, float y, float width, float height) {
+Animation_set* init_animation_set(Texture *texture,int animation_count, float x, float y, float width, float height) {
     Animation_set *animations = malloc(sizeof(Animation_set));
-    Texture tex = get_texture_asset(tex_path);
-    tex.x = x;
-    tex.y = y;
-    tex.width = width;
-    tex.height = height;
-    animations->texture = &tex;
+    texture->x = x;
+    texture->y = y;
+    texture->width = width;
+    texture->height = height;
+    animations->texture = texture;
     animations->animation_count = animation_count;
+
+    return animations;
 }
 
 
@@ -86,7 +86,7 @@ void render_animation(Animation *animation, Window *window, Texture *texture) {
                         texture->height * viewport_rect->zoom };
     SDL_FRect src = { frame->x, frame->y, frame->width, frame->height };
 
-    printf("Rendering texture at: x: %f, y: %f, w: %f, h: %f\n", dest.x, dest.y, dest.w, dest.h);
+    printf("%f, %f, %f, %f\n", texture->x, texture->y, texture->width, texture->height);
 
     SDL_RenderTexture(window->renderer, texture->Image, &src, &dest);
 }
