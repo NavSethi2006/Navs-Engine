@@ -7,7 +7,7 @@ Animation *animation;
 TileMap *tilemap;
 Texture background;
 Viewport *vp;
-SDL_Rect rect;
+
 
 Frame RUN_ANIMATION[3] = {{0, 33, 20, 31},
                                {20, 33, 20, 31},
@@ -40,6 +40,9 @@ enum PlayerStates {
 
 } PlayerStates;
 
+
+PhysicsWorld *physicsworld;
+RigidBody *player_body;
 
 
 void game() {
