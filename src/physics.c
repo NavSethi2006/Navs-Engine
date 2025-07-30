@@ -26,7 +26,7 @@ RigidBody* create_body(float x, float y, float width, float height, float mass, 
     body->is_static = is_static;
     body->velocity.x = 0;
     body->velocity.y = 0;
-    body->mass = mass;
+    body->mass = is_static ? 0 : mass;
     return body;
 }
 
@@ -35,16 +35,14 @@ void add_body(PhysicsWorld* world, RigidBody* body) {
     world->bodies[world->body_count++] = body;
 }
 
-void update_physics(PhysicsWorld* world) {
+void update_physics(PhysicsWorld* world, float delta_time) {
     for (int i = 0; i < world->body_count; i++) {
         RigidBody* body = world->bodies[i];
-
-        body->velocity.x += world->gravity * world->time_step;
-        body->velocity.y += world->gravity * world->time_step;
-
-        body->position.x += body->velocity.x * world->time_step;
-        body->position.y += body->velocity.y * world->time_step;
+        if(body->is_static) continue;
         
+        body->position.y += body->velocity.y * delta_time;
+        body->position.x += body->velocity.x * delta_time;
+
     }
 
     for (int i = 0; i < world->body_count; i++) {
@@ -66,6 +64,8 @@ bool check_collision(RigidBody* body1, RigidBody* body2) {
 
 void resolve_collision(RigidBody* body1, RigidBody* body2) {
 
+    if(body1->is_static && body2->is_static) return;
+
     float overlap_x = fmin(body1->position.x + body1->size.x, body2->position.x + body2->size.x) -
                         fmax(body1->position.x, body2->position.x);
     float overlap_y = fmin(body1->position.y + body1->size.y, body2->position.y + body2->size.y) -
@@ -79,8 +79,9 @@ void resolve_collision(RigidBody* body1, RigidBody* body2) {
             body1->position.x += overlap_x / 2;
             body2->position.x -= overlap_x / 2;
         }
-        body1->velocity.x = 0;
-        body2->velocity.y = 0;
+        if (!body1->is_static) body1->velocity.x = 0;
+        if (!body2->is_static) body2->velocity.x = 0;
+
     } else {
         if (body1->position.y < body2->position.y) {
             body1->position.y -= overlap_y / 2;
@@ -89,8 +90,8 @@ void resolve_collision(RigidBody* body1, RigidBody* body2) {
             body1->position.y += overlap_y / 2;
             body2->position.y -= overlap_y / 2;
         }
-        body1->velocity.y = 0;
-        body2->velocity.y = 0;
+        if (!body1->is_static) body1->velocity.y = 0;
+        if (!body2->is_static) body2->velocity.y = 0;
     }
 }
 

@@ -16,6 +16,7 @@
         "stdint.h": "c",
         "any": "c",
         "viewport.h": "c",
-        "physics.h": "c"
+        "physics.h": "c",
+        "math.h": "c"
     }
 }

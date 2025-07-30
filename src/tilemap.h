@@ -11,6 +11,7 @@
  #include "viewport.h"
  #include "window.h"
  #include "assets/assets.h"
+ #include "physics.h"
  
  /**
   * @struct TileMap
@@ -26,6 +27,18 @@
      int x, y;                 /**< Base position of the map in world space. */
  } TileMap;
  
+
+ typedef struct TileCollider {
+    float x,y,w,h;
+ } TileCollider;
+
+ typedef struct CustomTileCollider {
+    TileCollider tilecollider;
+    RigidBody *rb;
+ } CustomTileCollider;
+
+
+
  /**
  * @brief Load a TMX tile map and prepare it for rendering.
  * @param path Path to the .tmx file.

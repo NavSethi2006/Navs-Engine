@@ -4,5 +4,5 @@ bin/CMakeFiles
 bin/cmake_install.cmake
 bin/CMakeCache.txt
 bin/Makefile
-bin/online_pong.exe
-bin/online_pong
+bin/navsengine
+bin/navsengine.exe

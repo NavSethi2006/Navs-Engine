@@ -43,11 +43,18 @@ enum PlayerStates {
 
 PhysicsWorld *physicsworld;
 RigidBody *player_body;
+RigidBody *ground;
+
+typedef struct {
+    bool left, right, up, down, jump, attack;
+} InputState;
+
+InputState input = {0};
 
 
 void game() {
 
-    vp = viewport_init(500, 0, 1600, 800, 1);
+    vp = viewport_init(0, 0, 1600, 800, 1);
 
     set_render_viewport(vp);
 
@@ -67,6 +74,13 @@ void game() {
 
     tilemap = load_tmx_map("../src/assets/untitled.tmx",0, 0, false);   
 
+    physicsworld = create_world(0, 1/120);
+    player_body = create_body(50, 50, 50, 50, 1, false);
+    ground = create_body(500, 500, 100, 100, 0, true);
+
+    add_body(physicsworld, player_body);
+    add_body(physicsworld, ground);
+
 }
 
 
@@ -75,40 +89,41 @@ void game_handle_event(SDL_Event *event) {
     if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_ESCAPE) {
         switch_scene(get_menu_scene());
     }
-    if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_W) {
-        PlayerStates = RUN;
-        viewport_move(vp, 0, -20);
-    }
-    if(event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_S) {
-        PlayerStates = IDLE;
-        viewport_move(vp, 0, 20);
-    }
-    if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_SPACE) {
-        PlayerStates = JUMP;
-    }
-    if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_A) {
-        PlayerStates = ATTACK;
-        viewport_move(vp, -20, 0);
-    }
-    if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_D) {
-        PlayerStates = WALL_CLIMB;
-        viewport_move(vp, 20, 0);
+    if(event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP) {
+        bool state = (event->type == SDL_EVENT_KEY_DOWN);
+        
+        switch(event->key.key) {
+            case SDLK_A: input.left = state; break;
+            case SDLK_D: input.right = state; break;
+            case SDLK_W: input.up = state; break;
+            case SDLK_S: input.down = state; break;
+            case SDLK_SPACE: input.jump = state; break;
+        }
     }
 }
 
+const float move_speed = 400.0f;
+
+
 void game_update(float delta_time) {
 
+    player_body->velocity.x = 0;
+    
+    if(input.left) player_body->velocity.x = -move_speed;
+    if(input.right) player_body->velocity.x = move_speed;
+    if(input.up) player_body->velocity.y = -move_speed;
+    if(input.down) player_body->velocity.y = move_speed;
+    
     update_animation_set(animations, PlayerStates, delta_time);
 
+    update_physics(physicsworld, delta_time);
 }
 
 void game_render(Window *window) {
     
     render_tmx_map(window, tilemap);
-    
+    draw_bodies(window, physicsworld);
     render_animation_set(animations, PlayerStates, window);
-
-    vp->x -= 10;
 }
 
 void game_free() {

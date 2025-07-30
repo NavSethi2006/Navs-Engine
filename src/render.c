@@ -86,8 +86,6 @@ void render_animation(Animation *animation, Window *window, Texture *texture) {
                         texture->height * viewport_rect->zoom };
     SDL_FRect src = { frame->x, frame->y, frame->width, frame->height };
 
-    printf("%f, %f, %f, %f\n", texture->x, texture->y, texture->width, texture->height);
-
     SDL_RenderTexture(window->renderer, texture->Image, &src, &dest);
 }
 
