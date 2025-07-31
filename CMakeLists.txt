@@ -38,6 +38,7 @@ elseif (UNIX)
     find_package(ZLIB REQUIRED)
     
     target_link_libraries(navsengine PUBLIC LibXml2::LibXml2 ZLIB::ZLIB)
+    target_link_libraries(navsengine PUBLIC m)
     target_link_libraries(navsengine PUBLIC ${CMAKE_SOURCE_DIR}/lib/gnu/libSDL3.so)
     target_link_libraries(navsengine PUBLIC ${CMAKE_SOURCE_DIR}/lib/gnu/libSDL3_image.so)
     target_link_libraries(navsengine PUBLIC ${CMAKE_SOURCE_DIR}/lib/gnu/libtmx.a)

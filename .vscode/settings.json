@@ -17,6 +17,9 @@
         "any": "c",
         "viewport.h": "c",
         "physics.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "ratio": "c",
+        "cmath": "c",
+        "format": "c"
     }
 }

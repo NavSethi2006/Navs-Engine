@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
         end_rendering(&window);
 
 
-        SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
+    //    SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
 
     }
    

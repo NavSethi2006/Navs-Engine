@@ -25,8 +25,14 @@
      Viewport *vp;             /**< Camera/viewport used for rendering. */
      bool Debug_lines;         /**< Whether to draw debug outlines for objects. */
      int x, y;                 /**< Base position of the map in world space. */
+
  } TileMap;
  
+
+ typedef struct HitboxList {
+      Hitbox *hitboxes;
+      int count;
+ }HitboxList; 
 
  typedef struct TileCollider {
     float x,y,w,h;

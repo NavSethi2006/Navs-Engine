@@ -20,6 +20,7 @@ TileMap* load_tmx_map(const char *map_path,int x, int y, bool draw_debug_for_obj
 	printf("TMX loaded\n");
     map->x = x;
     map->y = y;
+    map->hitbox = malloc(sizeof(Hitbox));
 	map->layer = map->map->ly_head;
 	map->tiles = map->map->tiles;
 	map->Debug_lines = draw_debug_for_obj_layer;
@@ -83,6 +84,7 @@ void render_image_layer(Window *window, TileMap *map) {
 
 void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) {
     tmx_object *obj = group->head;
+    int count = 0;
     while (obj) {
         if (obj->visible && obj->obj_type == OT_SQUARE) {
             SDL_FRect rect = {
@@ -91,13 +93,25 @@ void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) 
                 .w = obj->width,
                 .h = obj->height
             };
+
+            printf("shit\n");
+            
+            map->hitbox[count].position.x = rect.x;
+            map->hitbox[count].position.y = rect.y;
+            map->hitbox[count].size.x = rect.w;
+            map->hitbox[count].size.y = rect.h;
+
+            realloc(map->hitbox, sizeof(Hitbox) * (count+1));
+            
             if(map->Debug_lines) {
                 SDL_RenderRect(window->renderer, &rect);
             }
         }
+        count++;
         obj = obj->next;
     }
 }
+
 
 void render_layers(Window *window, TileMap *map, tmx_layer *layer) {
 	while (layer) {
@@ -127,9 +141,7 @@ void render_layers(Window *window, TileMap *map, tmx_layer *layer) {
 }
 
 void render_tmx_map(Window *window, TileMap *map) {
-
 	render_layers(window, map, map->map->ly_head);
-
 }
 
 void free_tmx_map(TileMap *map) {

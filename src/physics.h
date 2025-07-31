@@ -16,14 +16,18 @@ typedef struct Vector2D {
     float y;
 } Vector2D;
 
+typedef struct Hitbox {
+    Vector2D position;
+    Vector2D size;
+} Hitbox;
+
 /**
  * @struct RigidBody
  * @brief a rigidbody for 2d spaces, give physics and a hitbox for any object in the game
  */
 typedef struct RigidBody {
-    Vector2D position;
+    Hitbox hitbox;
     Vector2D velocity;
-    Vector2D size;
     float mass;
     bool is_static;
 } RigidBody;
@@ -78,7 +82,7 @@ void add_body(PhysicsWorld* world, RigidBody* body);
  */
 void update_physics(PhysicsWorld* world, float delta_time);
 /**
- * @brief check if for collision between to rigidbodies
+ * @brief check if for collision between two hitboxes
  * @param body1 the first body
  * @param body2 the second body
  * @return True if they have collided

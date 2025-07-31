@@ -9,34 +9,37 @@ Texture background;
 Viewport *vp;
 
 
-Frame RUN_ANIMATION[3] = {{0, 33, 20, 31},
-                               {20, 33, 20, 31},
-                               {40, 33, 20, 31}};
+Frame WALK_DOWN_ANIMATION[4] = {{0,0,12,16},
+                               {15,0,13,16},
+                               {32,1,12,15},
+                                {46,0,13,16}};
+Frame WALK_UP_ANIMATION[4] = {{0,49,12,15},
+                              {15,48,13,16},
+                              {31,48,12,16},
+                              {48,48,13,16}};
+Frame WALK_RIGHT_ANIMATION[4] = {{0,33,10,15},
+                                 {16,32,10,16},
+                                 {32,33,10,15},
+                                 {47,32,10,16}};
+Frame WALK_LEFT_ANIMATION[4] = {{0,17,10,15},
+                                {16,16,10,16},
+                                {32,17,10,15},
+                                {47,16,10,16}};
+Frame IDLE_ANIMATION_DOWN[1] = {15,0,13,16};
+Frame IDLE_ANIMATION_UP[1] = {15,48,13,16};
+Frame IDLE_ANIMATION_RIGHT[1] = {16,32,10,16};
+Frame IDLE_ANIMATION_LEFT[1] = {16,16,10,16};
 
-Frame IDLE_ANIMATION[1] = {0,0,17,32};
-
-Frame JUMP_ANIMATION[5] = {{40, 80, 18, 31},
-                               {70, 83, 16, 25},
-                               {97, 86, 23, 20},
-                               {129, 83, 18, 25},
-                               {157, 84, 22, 23}};
-                               
-Frame WALL_CLIMB_ANIMATION[4] = {{0,199,17,32},
-                                {40,201,17,32},
-                                {80,200,16,31},
-                            {118, 201, 23,31}};
-
-Frame ATTACK_ANIMATION[4] = {{0,240,17,30},
-                            {28,241,42,30},
-                            {74,241,29,30},
-                            {115,241,27,29}};
 
 enum PlayerStates {
-    IDLE,
-    RUN,
-    JUMP,
-    WALL_CLIMB,
-    ATTACK
+    IDLE_DOWN,
+    IDLE_UP,
+    IDLE_RIGHT,
+    IDLE_LEFT,
+    WALK_DOWN,
+    WALK_LEFT,
+    WALK_RIGHT,
+    WALK_UP
 
 } PlayerStates;
 
@@ -60,14 +63,18 @@ void game() {
 
     tex = get_texture_asset("../src/assets/player.png");
 
-    animations = init_animation_set(&tex, 5, 0, 0, 40, 51);
+    animations = init_animation_set(&tex, 8, 0, 0, 10*5, 16*5);
 
-    animations->animations[IDLE] = init_animation(IDLE_ANIMATION, 1, 0.2f);
-    animations->animations[RUN] = init_animation(RUN_ANIMATION, 3, 0.2f);
-    animations->animations[JUMP] = init_animation(JUMP_ANIMATION, 5, 0.1f);
-    animations->animations[ATTACK] = init_animation(ATTACK_ANIMATION, 4, 0.1f);
-    animations->animations[WALL_CLIMB] = init_animation(WALL_CLIMB_ANIMATION, 4, 0.1f);
-    PlayerStates = IDLE;
+    animations->animations[IDLE_DOWN] = init_animation(IDLE_ANIMATION_DOWN, 1, 0.2f);
+    animations->animations[IDLE_UP] = init_animation(IDLE_ANIMATION_UP, 1, 0.2f);
+    animations->animations[IDLE_RIGHT] = init_animation(IDLE_ANIMATION_RIGHT, 1, 0.2f);
+    animations->animations[IDLE_LEFT] = init_animation(IDLE_ANIMATION_LEFT, 1, 0.2f);
+
+    animations->animations[WALK_DOWN] = init_animation(WALK_DOWN_ANIMATION, 4, 0.2f);
+    animations->animations[WALK_UP] = init_animation(WALK_UP_ANIMATION, 4, 0.2f);
+    animations->animations[WALK_RIGHT] = init_animation(WALK_RIGHT_ANIMATION, 4, 0.2f);
+    animations->animations[WALK_LEFT] = init_animation(WALK_LEFT_ANIMATION, 4, 0.2f);
+    PlayerStates = IDLE_RIGHT;
 
     tmx_img_load_func = (void*(*)(const char*))map_texture_loader;
     tmx_img_free_func = (void (*)(void*))SDL_DestroyTexture;
@@ -75,8 +82,10 @@ void game() {
     tilemap = load_tmx_map("../src/assets/untitled.tmx",0, 0, false);   
 
     physicsworld = create_world(0, 1/120);
-    player_body = create_body(50, 50, 50, 50, 1, false);
+    player_body = create_body(tex.x, tex.y, tex.width, tex.height, 1, false);
     ground = create_body(500, 500, 100, 100, 0, true);
+
+
 
     add_body(physicsworld, player_body);
     add_body(physicsworld, ground);
@@ -106,14 +115,30 @@ const float move_speed = 400.0f;
 
 
 void game_update(float delta_time) {
+    
+    if(input.left)player_body->velocity.x = -move_speed;
+    if(input.right)player_body->velocity.x = move_speed;
+    if(input.up)player_body->velocity.y = -move_speed;
+    if(input.down)player_body->velocity.y = move_speed;
 
-    player_body->velocity.x = 0;
-    
-    if(input.left) player_body->velocity.x = -move_speed;
-    if(input.right) player_body->velocity.x = move_speed;
-    if(input.up) player_body->velocity.y = -move_speed;
-    if(input.down) player_body->velocity.y = move_speed;
-    
+    if(player_body->velocity.x < 0) {
+        PlayerStates = WALK_LEFT;
+    } else if(player_body->velocity.x > 0) {
+        PlayerStates = WALK_RIGHT;
+    } else if(player_body->velocity.y < 0) {
+        PlayerStates = WALK_UP;
+    } else if(player_body->velocity.y > 0) {
+        PlayerStates = WALK_DOWN;
+    } else {
+        if(PlayerStates == WALK_LEFT) PlayerStates = IDLE_LEFT;
+        else if(PlayerStates == WALK_RIGHT) PlayerStates = IDLE_RIGHT;
+        else if(PlayerStates == WALK_UP) PlayerStates = IDLE_UP;
+        else if(PlayerStates == WALK_DOWN) PlayerStates = IDLE_DOWN;
+    }
+
+    animations->texture->x = player_body->hitbox.position.x;
+    animations->texture->y = player_body->hitbox.position.y;
+
     update_animation_set(animations, PlayerStates, delta_time);
 
     update_physics(physicsworld, delta_time);
