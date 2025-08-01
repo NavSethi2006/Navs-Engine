@@ -20,10 +20,11 @@ TileMap* load_tmx_map(const char *map_path,int x, int y, bool draw_debug_for_obj
 	printf("TMX loaded\n");
     map->x = x;
     map->y = y;
-    map->hitbox = malloc(sizeof(Hitbox));
 	map->layer = map->map->ly_head;
 	map->tiles = map->map->tiles;
 	map->Debug_lines = draw_debug_for_obj_layer;
+
+
 	return map;
 }
 
@@ -34,6 +35,39 @@ SDL_Color tmx_to_sdl_color(unsigned int color) {
 	c.g = (color >> 8) & 0xFF;
 	c.r = (color) & 0xFF;
 	return c;
+}
+
+Hitbox* get_object_layer(TileMap *map, const char *layer_name, int *count_out) {
+    int capacity = 16;
+    int count = 0;
+    Hitbox *boxes = malloc(sizeof(Hitbox) * capacity);
+    if (!boxes) return NULL;
+
+    tmx_layer *layer = map->map->ly_head;
+    while (layer) {
+        if (layer->type == L_OBJGR && layer->visible && strcmp(layer->name, layer_name) == 0) {
+            tmx_object *obj = layer->content.objgr->head;
+            while (obj) {
+                if (obj->obj_type == OT_SQUARE) {
+                    if (count >= capacity) {
+                        capacity *= 2;
+                        boxes = realloc(boxes, sizeof(Hitbox) * capacity);
+                        if (!boxes) return NULL;
+                    }
+                    boxes[count].position.x = obj->x + map->x;
+                    boxes[count].position.y = obj->y+ map->y;
+                    boxes[count].size.x = obj->width;
+                    boxes[count].size.y = obj->height;
+
+                    count++;
+                }
+                obj = obj->next;
+            }
+        }
+        layer = layer->next;
+    }
+    count_out = &count;
+    return boxes;
 }
 
 void draw_tile(Window *window, TileMap *map, tmx_tile *tile, int x, int y) {
@@ -94,14 +128,7 @@ void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) 
                 .h = obj->height
             };
 
-            printf("shit\n");
             
-            map->hitbox[count].position.x = rect.x;
-            map->hitbox[count].position.y = rect.y;
-            map->hitbox[count].size.x = rect.w;
-            map->hitbox[count].size.y = rect.h;
-
-            realloc(map->hitbox, sizeof(Hitbox) * (count+1));
             
             if(map->Debug_lines) {
                 SDL_RenderRect(window->renderer, &rect);

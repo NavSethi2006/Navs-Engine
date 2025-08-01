@@ -13,6 +13,15 @@
  #include "assets/assets.h"
  #include "physics.h"
  
+
+
+
+
+ typedef struct ObjectLayerList {
+   Hitbox *object;
+   struct ObjectLayerList *next;
+}ObjectLayerList;
+
  /**
   * @struct TileMap
   * @brief Represents a loaded TMX tile map with rendering settings.
@@ -25,24 +34,8 @@
      Viewport *vp;             /**< Camera/viewport used for rendering. */
      bool Debug_lines;         /**< Whether to draw debug outlines for objects. */
      int x, y;                 /**< Base position of the map in world space. */
-
+     ObjectLayerList *object_rects;
  } TileMap;
- 
-
- typedef struct HitboxList {
-      Hitbox *hitboxes;
-      int count;
- }HitboxList; 
-
- typedef struct TileCollider {
-    float x,y,w,h;
- } TileCollider;
-
- typedef struct CustomTileCollider {
-    TileCollider tilecollider;
-    RigidBody *rb;
- } CustomTileCollider;
-
 
 
  /**
@@ -54,6 +47,8 @@
  * @return Pointer to the loaded TileMap.
  */
 TileMap* load_tmx_map(const char *path, int x, int y, bool draw_debug_for_obj_layer);
+
+Hitbox* get_object_layer(TileMap *map, const char *layer_name, int *count_out);
 
 /**
  * @brief Convert a TMX color (ARGB) to SDL_Color.

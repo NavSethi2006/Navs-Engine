@@ -85,10 +85,16 @@ void game() {
     player_body = create_body(tex.x, tex.y, tex.width, tex.height, 1, false);
     ground = create_body(500, 500, 100, 100, 0, true);
 
+    int hitbox_count;
 
+    Hitbox* hitbox = get_object_layer(tilemap, "Collision", &hitbox_count);
+
+    for (int i = 0; i < hitbox_count; i++) {
+        RigidBody* body = create_body(hitbox[i].position.x, hitbox[i].position.y, hitbox[i].size.x, hitbox[i].size.y, 0, true);
+        add_body(physicsworld, body);
+    }
 
     add_body(physicsworld, player_body);
-    add_body(physicsworld, ground);
 
 }
 
@@ -139,15 +145,19 @@ void game_update(float delta_time) {
     animations->texture->x = player_body->hitbox.position.x;
     animations->texture->y = player_body->hitbox.position.y;
 
+    vp->x = player_body->hitbox.position.x - (vp->width / 2);
+    vp->y = player_body->hitbox.position.y - (vp->height / 2);
+
     update_animation_set(animations, PlayerStates, delta_time);
 
     update_physics(physicsworld, delta_time);
+
 }
 
 void game_render(Window *window) {
     
     render_tmx_map(window, tilemap);
-    draw_bodies(window, physicsworld);
+//    draw_bodies(window, physicsworld);
     render_animation_set(animations, PlayerStates, window);
 }
 
