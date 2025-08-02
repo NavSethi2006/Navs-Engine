@@ -12,11 +12,11 @@
 void menu();
 void menu_handle_event(SDL_Event *event);
 void menu_update(float delta_time);
-void menu_render(Window *window);
+void menu_render(NE_Window *window);
 
-extern Scene Menu_Scene;
+extern NE_Scene Menu_Scene;
 
-Scene *get_menu_scene();
+NE_Scene *get_menu_scene();
 
 
 #endif // MENU_H

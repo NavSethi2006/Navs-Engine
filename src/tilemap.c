@@ -1,12 +1,8 @@
 #include "tilemap.h"
 
-void* map_texture_loader(const char *path) {
-	Texture tex = get_texture_asset(path);
-	return (void*)tex.Image;
-}
 
-TileMap* load_tmx_map(const char *map_path,int x, int y, bool draw_debug_for_obj_layer) {
-    TileMap *map = malloc(sizeof(TileMap));
+NE_TileMap* load_tmx_map(const char *map_path,int x, int y, bool draw_debug_for_obj_layer) {
+    NE_TileMap *map = malloc(sizeof(NE_TileMap));
     if (!map) {
         fprintf(stderr, "ERROR: Could not allocate memory for TileMap.\n");
         return NULL;
@@ -37,10 +33,10 @@ SDL_Color tmx_to_sdl_color(unsigned int color) {
 	return c;
 }
 
-Hitbox* get_object_layer(TileMap *map, const char *layer_name, int *count_out) {
+NE_Hitbox* get_object_layer(NE_TileMap *map, const char *layer_name, int *count_out) {
     int capacity = 16;
     int count = 0;
-    Hitbox *boxes = malloc(sizeof(Hitbox) * capacity);
+    NE_Hitbox *boxes = malloc(sizeof(NE_Hitbox) * capacity);
     if (!boxes) return NULL;
 
     tmx_layer *layer = map->map->ly_head;
@@ -51,7 +47,7 @@ Hitbox* get_object_layer(TileMap *map, const char *layer_name, int *count_out) {
                 if (obj->obj_type == OT_SQUARE) {
                     if (count >= capacity) {
                         capacity *= 2;
-                        boxes = realloc(boxes, sizeof(Hitbox) * capacity);
+                        boxes = realloc(boxes, sizeof(NE_Hitbox) * capacity);
                         if (!boxes) return NULL;
                     }
                     boxes[count].position.x = obj->x + map->x;
@@ -70,7 +66,7 @@ Hitbox* get_object_layer(TileMap *map, const char *layer_name, int *count_out) {
     return boxes;
 }
 
-void draw_tile(Window *window, TileMap *map, tmx_tile *tile, int x, int y) {
+void draw_tile(NE_Window *window, NE_TileMap *map, tmx_tile *tile, int x, int y) {
     if (!tile || !tile->tileset || !tile->tileset->image) 
         return;
 
@@ -83,7 +79,7 @@ void draw_tile(Window *window, TileMap *map, tmx_tile *tile, int x, int y) {
     render_with_size_and_rect(&map->tileset, window, &src, &dest);
 }
 
-void render_tile_layer(Window *window, TileMap *map) {
+void render_tile_layer(NE_Window *window, NE_TileMap *map) {
     for (unsigned long y = 0; y < map->map->height; y++) {
         for (unsigned long x = 0; x < map->map->width; x++) {
             unsigned int gid = map->layer->content.gids[(y * map->map->width) + x];
@@ -102,7 +98,7 @@ void render_tile_layer(Window *window, TileMap *map) {
     }
 }
 
-void render_image_layer(Window *window, TileMap *map) {
+void render_image_layer(NE_Window *window, NE_TileMap *map) {
     if (!map->layer->content.image) return;
     SDL_Texture *tex = (SDL_Texture*)map->layer->content.image->resource_image;
 
@@ -116,7 +112,7 @@ void render_image_layer(Window *window, TileMap *map) {
     SDL_RenderTexture(window->renderer, tex, NULL, &dest);
 }
 
-void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) {
+void render_object_layer(NE_Window *window, NE_TileMap *map, tmx_object_group *group) {
     tmx_object *obj = group->head;
     int count = 0;
     while (obj) {
@@ -128,8 +124,6 @@ void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) 
                 .h = obj->height
             };
 
-            
-            
             if(map->Debug_lines) {
                 SDL_RenderRect(window->renderer, &rect);
             }
@@ -140,7 +134,7 @@ void render_object_layer(Window *window, TileMap *map, tmx_object_group *group) 
 }
 
 
-void render_layers(Window *window, TileMap *map, tmx_layer *layer) {
+void render_layers(NE_Window *window, NE_TileMap *map, tmx_layer *layer) {
 	while (layer) {
 		if (!layer->visible) {
 			layer = layer->next;
@@ -155,10 +149,8 @@ void render_layers(Window *window, TileMap *map, tmx_layer *layer) {
 				render_image_layer(window, map);
 				break;
 			case L_OBJGR:
-			
 				render_object_layer(window, map, layer->content.objgr);
 				break;
-			
 			case L_GROUP:
 				render_layers(window, map, layer->content.group_head);
 				break;
@@ -167,11 +159,11 @@ void render_layers(Window *window, TileMap *map, tmx_layer *layer) {
 	}
 }
 
-void render_tmx_map(Window *window, TileMap *map) {
+void render_tmx_map(NE_Window *window, NE_TileMap *map) {
 	render_layers(window, map, map->map->ly_head);
 }
 
-void free_tmx_map(TileMap *map) {
+void free_tmx_map(NE_TileMap *map) {
 	if (!map) return;
 
     if (map->map) {

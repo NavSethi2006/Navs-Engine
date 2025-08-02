@@ -13,18 +13,18 @@ void menu_handle_event(SDL_Event *event) {
 void menu_update(float delta_time) {
 }
 
-void menu_render(Window* window) {
+void menu_render(NE_Window* window) {
     
 }
 
-Scene Menu_Scene = {
+NE_Scene Menu_Scene = {
     .init  = menu,
     .handle_event = menu_handle_event,
     .update = menu_update,
     .render = menu_render
 };
 
-Scene *get_menu_scene() {
+NE_Scene *get_menu_scene() {
     return &Menu_Scene;
 }
 

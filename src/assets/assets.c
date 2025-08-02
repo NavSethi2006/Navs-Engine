@@ -4,12 +4,12 @@ static Asset_Texture* texture_assets = NULL;
 static Asset_Map* map_asset = NULL;
 static SDL_Renderer* renderer = NULL;
 
-void init_asset_manager(Window* window) {
+void init_asset_manager(NE_Window* window) {
     renderer = window->renderer;
 }
 
-Texture get_texture_asset(const char* file_path) {
-    Texture texture = {0};  // Zero initialize
+NE_Texture get_texture_asset(const char* file_path) {
+    NE_Texture texture = {0};  // Zero initialize
 
     // Search cache
     Asset_Texture* curr = texture_assets;
@@ -41,6 +41,36 @@ Texture get_texture_asset(const char* file_path) {
     return texture;
 }
 
+void* map_texture_loader(const char *path) {
+	NE_Texture tex = get_texture_asset(path);
+	return (void*)tex.Image;
+}
+
+NE_TileMap* get_map_asset(const char* file_path, int x , int y, bool draw_debug_for_obj_layer) {
+    NE_TileMap *map;
+
+    Asset_Map* curr = map_asset;
+    while (curr) {
+        if (curr->key && strcmp(curr->key, file_path) == 0) {
+            return curr->map;
+        }
+        curr = curr->next;        
+    }
+
+    map = load_tmx_map(file_path, x, y, draw_debug_for_obj_layer);
+
+    Asset_Map *newAsset = malloc(sizeof(Asset_Map));
+    newAsset->key = strdup(file_path);
+    newAsset->map = map;
+    newAsset->next = map_asset;
+    map_asset = newAsset;
+    
+    printf("Loading map asset: %s\n", file_path);
+
+    return map;
+
+}
+ 
 SDL_Renderer *get_renderer() {
     return renderer;
 }

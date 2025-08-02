@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     
     init_all();
 
-    Window window;
+    NE_Window window;
     SDL_Event event;
 
     create_window(&window, "navsengine", 1600, 800);
@@ -70,7 +70,6 @@ int main(int argc, char* argv[]) {
 
     while(gameloop) {
 
-
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
                 gameloop = 0;
@@ -83,15 +82,12 @@ int main(int argc, char* argv[]) {
             
         }
 
-
-
         Uint64 now = SDL_GetTicks();
         float delta = (now - last_ticks) / 1000.0f;
         last_ticks = now;
 
         if (CURRENT_SCENE && CURRENT_SCENE->update) {
             CURRENT_SCENE->update(delta);
-
         }
 
         begin_rendering(&window);
@@ -103,7 +99,7 @@ int main(int argc, char* argv[]) {
         end_rendering(&window);
 
 
-    //    SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
+        SDL_Delay(16);  // Roughly 60 FPS (1000ms / 60 ≈ 16.6ms)
 
     }
    

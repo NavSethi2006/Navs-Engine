@@ -1,34 +1,34 @@
 #include "game.h"
 
-Texture tex;
-Texture tileset;
-Animation_set *animations;
-Animation *animation;
-TileMap *tilemap;
-Texture background;
-Viewport *vp;
+NE_Texture tex;
+NE_Texture tileset;
+NE_Animation_set *animations;
+NE_Animation *animation;
+NE_TileMap *tilemap;
+NE_Texture background;
+NE_Viewport *vp;
 
 
-Frame WALK_DOWN_ANIMATION[4] = {{0,0,12,16},
+NE_Frame WALK_DOWN_ANIMATION[4] = {{0,0,12,16},
                                {15,0,13,16},
                                {32,1,12,15},
                                 {46,0,13,16}};
-Frame WALK_UP_ANIMATION[4] = {{0,49,12,15},
+NE_Frame WALK_UP_ANIMATION[4] = {{0,49,12,15},
                               {15,48,13,16},
                               {31,48,12,16},
                               {48,48,13,16}};
-Frame WALK_RIGHT_ANIMATION[4] = {{0,33,10,15},
+NE_Frame WALK_RIGHT_ANIMATION[4] = {{0,33,10,15},
                                  {16,32,10,16},
                                  {32,33,10,15},
                                  {47,32,10,16}};
-Frame WALK_LEFT_ANIMATION[4] = {{0,17,10,15},
+NE_Frame WALK_LEFT_ANIMATION[4] = {{0,17,10,15},
                                 {16,16,10,16},
                                 {32,17,10,15},
                                 {47,16,10,16}};
-Frame IDLE_ANIMATION_DOWN[1] = {15,0,13,16};
-Frame IDLE_ANIMATION_UP[1] = {15,48,13,16};
-Frame IDLE_ANIMATION_RIGHT[1] = {16,32,10,16};
-Frame IDLE_ANIMATION_LEFT[1] = {16,16,10,16};
+NE_Frame IDLE_ANIMATION_DOWN[1] = {15,0,13,16};
+NE_Frame IDLE_ANIMATION_UP[1] = {15,48,13,16};
+NE_Frame IDLE_ANIMATION_RIGHT[1] = {16,32,10,16};
+NE_Frame IDLE_ANIMATION_LEFT[1] = {16,16,10,16};
 
 
 enum PlayerStates {
@@ -44,9 +44,9 @@ enum PlayerStates {
 } PlayerStates;
 
 
-PhysicsWorld *physicsworld;
-RigidBody *player_body;
-RigidBody *ground;
+NE_PhysicsWorld *physicsworld;
+NE_RigidBody *player_body;
+NE_RigidBody *ground;
 
 typedef struct {
     bool left, right, up, down, jump, attack;
@@ -57,7 +57,7 @@ InputState input = {0};
 
 void game() {
 
-    vp = viewport_init(0, 0, 1600, 800, 1);
+    vp = viewport_init(0, 0, 1600, 800, 2);
 
     set_render_viewport(vp);
 
@@ -79,7 +79,7 @@ void game() {
     tmx_img_load_func = (void*(*)(const char*))map_texture_loader;
     tmx_img_free_func = (void (*)(void*))SDL_DestroyTexture;
 
-    tilemap = load_tmx_map("../src/assets/untitled.tmx",0, 0, false);   
+    tilemap = get_map_asset("../src/assets/untitled.tmx", 0, 0, false);   
 
     physicsworld = create_world(0, 1/120);
     player_body = create_body(tex.x, tex.y, tex.width, tex.height, 1, false);
@@ -87,10 +87,10 @@ void game() {
 
     int hitbox_count;
 
-    Hitbox* hitbox = get_object_layer(tilemap, "Collision", &hitbox_count);
+    NE_Hitbox* hitbox = get_object_layer(tilemap, "Collision", &hitbox_count);
 
     for (int i = 0; i < hitbox_count; i++) {
-        RigidBody* body = create_body(hitbox[i].position.x, hitbox[i].position.y, hitbox[i].size.x, hitbox[i].size.y, 0, true);
+        NE_RigidBody* body = create_body(hitbox[i].position.x, hitbox[i].position.y, hitbox[i].size.x, hitbox[i].size.y, 0, true);
         add_body(physicsworld, body);
     }
 
@@ -145,8 +145,8 @@ void game_update(float delta_time) {
     animations->texture->x = player_body->hitbox.position.x;
     animations->texture->y = player_body->hitbox.position.y;
 
-    vp->x = player_body->hitbox.position.x - (vp->width / 2);
-    vp->y = player_body->hitbox.position.y - (vp->height / 2);
+    vp->x = (player_body->hitbox.position.x + (player_body->hitbox.size.x/2)) - (vp->width/vp->zoom / 2);
+    vp->y = (player_body->hitbox.position.y + (player_body->hitbox.size.x/2)) - (vp->height/vp->zoom / 2);
 
     update_animation_set(animations, PlayerStates, delta_time);
 
@@ -154,7 +154,7 @@ void game_update(float delta_time) {
 
 }
 
-void game_render(Window *window) {
+void game_render(NE_Window *window) {
     
     render_tmx_map(window, tilemap);
 //    draw_bodies(window, physicsworld);
@@ -168,7 +168,7 @@ void game_free() {
 }
 
 
-Scene Game_Scene = {
+NE_Scene Game_Scene = {
     .init  = game,
     .handle_event = game_handle_event,
     .update = game_update,
@@ -176,6 +176,6 @@ Scene Game_Scene = {
     .free = game_free,
 };
 
-Scene *get_game_scene() {
+NE_Scene *get_game_scene() {
     return &Game_Scene;
 }

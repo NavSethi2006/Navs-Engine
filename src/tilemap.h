@@ -10,32 +10,22 @@
  #include "render.h"
  #include "viewport.h"
  #include "window.h"
- #include "assets/assets.h"
  #include "physics.h"
- 
 
-
-
-
- typedef struct ObjectLayerList {
-   Hitbox *object;
-   struct ObjectLayerList *next;
-}ObjectLayerList;
 
  /**
   * @struct TileMap
   * @brief Represents a loaded TMX tile map with rendering settings.
   */
- typedef struct TileMap {
+ typedef struct NE_TileMap {
      tmx_map *map;             /**< Pointer to parsed TMX map. */
-     Texture tileset;          /**< The texture used for the tileset. */
+     NE_Texture tileset;          /**< The texture used for the tileset. */
      tmx_layer *layer;         /**< Pointer to the current layer. */
      tmx_tile **tiles;         /**< Array of all tile definitions. */
-     Viewport *vp;             /**< Camera/viewport used for rendering. */
+     NE_Viewport *vp;             /**< Camera/viewport used for rendering. */
      bool Debug_lines;         /**< Whether to draw debug outlines for objects. */
      int x, y;                 /**< Base position of the map in world space. */
-     ObjectLayerList *object_rects;
- } TileMap;
+ } NE_TileMap;
 
 
  /**
@@ -46,9 +36,16 @@
  * @param draw_debug_for_obj_layer Whether to draw object outlines.
  * @return Pointer to the loaded TileMap.
  */
-TileMap* load_tmx_map(const char *path, int x, int y, bool draw_debug_for_obj_layer);
+NE_TileMap* load_tmx_map(const char *path, int x, int y, bool draw_debug_for_obj_layer);
 
-Hitbox* get_object_layer(TileMap *map, const char *layer_name, int *count_out);
+/**
+ * @brief Get all object object layers in a x,y,width,height rectangle format
+ * @param map Pointer to the TileMap to search
+ * @param layer_name name of the object layer to search for, MUST BE THE EXACT NAME INSIDE THE TMX FILE
+ * @param count_out Pointer to an integer to store the number of hitboxes found.
+ * @return Array of Hitbox structs representing the objects in the layer.
+ */
+NE_Hitbox* get_object_layer(NE_TileMap *map, const char *layer_name, int *count_out);
 
 /**
  * @brief Convert a TMX color (ARGB) to SDL_Color.
@@ -72,14 +69,14 @@ void* map_texture_loader(const char *path);
  * @param x World x-position to draw the tile.
  * @param y World y-position to draw the tile.
  */
-void draw_tile(Window *window, TileMap *map, tmx_tile *tile, int x, int y);
+void draw_tile(NE_Window *window, NE_TileMap *map, tmx_tile *tile, int x, int y);
 
 /**
  * @brief Render the current tile layer of the map.
  * @param window Pointer to the rendering Window.
  * @param map Pointer to the TileMap to render.
  */
-void render_tile_layer(Window *window, TileMap *map);
+void render_tile_layer(NE_Window *window, NE_TileMap *map);
 
 /**
  * @brief Render a TMX object group layer.
@@ -87,7 +84,7 @@ void render_tile_layer(Window *window, TileMap *map);
  * @param map Pointer to the TileMap.
  * @param objgrp Pointer to the TMX object group to render.
  */
-void render_object_layer(Window *window, TileMap *map, tmx_object_group *objgrp);
+void render_object_layer(NE_Window *window, NE_TileMap *map, tmx_object_group *objgrp);
 
 /**
  * @brief Recursively render all layers in a TMX map.
@@ -95,19 +92,19 @@ void render_object_layer(Window *window, TileMap *map, tmx_object_group *objgrp)
  * @param map Pointer to the TileMap.
  * @param layer Pointer to the TMX layer to render.
  */
-void render_layers(Window *window, TileMap *map, tmx_layer *layer);
+void render_layers(NE_Window *window, NE_TileMap *map, tmx_layer *layer);
 
 /**
  * @brief Render all tile and object layers in the map.
  * @param window Pointer to the Window.
  * @param map Pointer to the TileMap to render.
  */
-void render_tmx_map(Window *window, TileMap *map);
+void render_tmx_map(NE_Window *window, NE_TileMap *map);
 
 /**
  * @brief Free all memory and textures associated with a tile map.
  * @param map Pointer to the TileMap to free.
  */
-void free_tmx_map(TileMap *map);
+void free_tmx_map(NE_TileMap *map);
  
  #endif

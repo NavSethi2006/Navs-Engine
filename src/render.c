@@ -1,23 +1,23 @@
 #include "render.h"
 
-static Viewport *viewport_rect;
+static NE_Viewport *viewport_rect;
 
-void set_render_viewport(Viewport *vp) {
+void set_render_viewport(NE_Viewport *vp) {
     viewport_rect = vp;
 }
 
-void set_texture(Texture *texture,int x, int y, int width, int height) {
+void set_texture(NE_Texture *texture,int x, int y, int width, int height) {
     texture->x = x;
     texture->y = y;
     texture->width = width;
     texture->height = height;
 }
 
-void render_texture(Texture *texture, Window *window) {
+void render_texture(NE_Texture *texture, NE_Window *window) {
     SDL_RenderTexture(window->renderer, texture->Image, NULL, NULL);
 }
 
-void render_texture_with_rect(Texture *texture, Window *window, Frame *frame) {
+void render_texture_with_rect(NE_Texture *texture, NE_Window *window, NE_Frame *frame) {
 
     SDL_FRect texture_rect = { ((float)texture->x - viewport_rect->x) * viewport_rect->zoom, 
                                 ((float)texture->y - viewport_rect->y) * viewport_rect->zoom, 
@@ -30,7 +30,7 @@ void render_texture_with_rect(Texture *texture, Window *window, Frame *frame) {
 }
 
 
-void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcrect, SDL_FRect *dstrect ) {
+void render_with_size_and_rect(NE_Texture *texture, NE_Window *window, SDL_FRect *srcrect, SDL_FRect *dstrect ) {
     SDL_FRect newrect = {(dstrect->x - viewport_rect->x) * viewport_rect->zoom,
                 (dstrect->y - viewport_rect->y) * viewport_rect->zoom,
                 dstrect->w * viewport_rect->zoom,
@@ -40,8 +40,8 @@ void render_with_size_and_rect(Texture *texture, Window *window, SDL_FRect *srcr
     SDL_RenderTexture(window->renderer, texture->Image, srcrect, &newrect);
 }
 
-Animation_set* init_animation_set(Texture *texture,int animation_count, float x, float y, float width, float height) {
-    Animation_set *animations = malloc(sizeof(Animation_set));
+NE_Animation_set* init_animation_set(NE_Texture *texture,int animation_count, float x, float y, float width, float height) {
+    NE_Animation_set *animations = malloc(sizeof(NE_Animation_set));
     texture->x = x;
     texture->y = y;
     texture->width = width;
@@ -53,11 +53,11 @@ Animation_set* init_animation_set(Texture *texture,int animation_count, float x,
 }
 
 
-Animation* init_animation(Frame *frames,int frame_count, float switch_time) {
-    Animation *animation = malloc(sizeof(Animation));
+NE_Animation* init_animation(NE_Frame *frames,int frame_count, float switch_time) {
+    NE_Animation *animation = malloc(sizeof(NE_Animation));
     animation->switch_time = switch_time;
     animation->frame_count = frame_count;
-    animation->frames = malloc(sizeof(Frame) * frame_count);
+    animation->frames = malloc(sizeof(NE_Frame) * frame_count);
     animation->current_frame = 0;
     animation->timer = 0.0f;
 
@@ -68,7 +68,7 @@ Animation* init_animation(Frame *frames,int frame_count, float switch_time) {
     return animation;
 }
 
-void update_animation(Animation *animation, float delta_time) {
+void update_animation(NE_Animation *animation, float delta_time) {
 
     animation->timer += delta_time;
 
@@ -78,8 +78,8 @@ void update_animation(Animation *animation, float delta_time) {
     }
 }
 
-void render_animation(Animation *animation, Window *window, Texture *texture) {   
-    Frame *frame = &animation->frames[animation->current_frame];   
+void render_animation(NE_Animation *animation, NE_Window *window, NE_Texture *texture) {   
+    NE_Frame *frame = &animation->frames[animation->current_frame];   
     SDL_FRect dest = { (texture->x - viewport_rect->x) * viewport_rect->zoom, 
                         (texture->y - viewport_rect->y) * viewport_rect->zoom,
                         texture->width * viewport_rect->zoom,
@@ -89,26 +89,24 @@ void render_animation(Animation *animation, Window *window, Texture *texture) {
     SDL_RenderTexture(window->renderer, texture->Image, &src, &dest);
 }
 
-void update_animation_set(Animation_set *animations, int current_state,float delta_time) {
+void update_animation_set(NE_Animation_set *animations, int current_state,float delta_time) {
     update_animation(animations->animations[current_state], delta_time);
 }
 
-void render_animation_set(Animation_set *animations, int current_state,Window *window) {
+void render_animation_set(NE_Animation_set *animations, int current_state,NE_Window *window) {
     render_animation(animations->animations[current_state], window, animations->texture);
 }
 
-void free_animation(Animation *animation) {
+void free_animation(NE_Animation *animation) {
     if (animation) {
-        
         free(animation->frames);
         animation->frames = NULL;
-
         free(animation);
         animation = NULL;
     }
 }
 
-void free_animation_set(Animation_set *animation) {
+void free_animation_set(NE_Animation_set *animation) {
     if (animation) {
         for (int i = 0; i < animation->animation_count; i++) {
             free_animation(animation->animations[i]);
@@ -119,5 +117,7 @@ void free_animation_set(Animation_set *animation) {
         animation = NULL;
     }
 }
+
+
 
 

@@ -1,7 +1,7 @@
 #include "physics.h"
 
-PhysicsWorld* create_world(float gravity, float time_step) {
-    PhysicsWorld* world = malloc(sizeof(PhysicsWorld));
+NE_PhysicsWorld* create_world(float gravity, float time_step) {
+    NE_PhysicsWorld* world = malloc(sizeof(NE_PhysicsWorld));
     world->gravity = gravity;
     world->time_step = time_step;
     world->body_count = 0;
@@ -9,7 +9,7 @@ PhysicsWorld* create_world(float gravity, float time_step) {
     return world;
 }
 
-void destroy_world(PhysicsWorld* world) {
+void destroy_world(NE_PhysicsWorld* world) {
     for (int i = 0; i < world->body_count; i++) {
         free(world->bodies[i]);
     }
@@ -17,8 +17,8 @@ void destroy_world(PhysicsWorld* world) {
     free(world);
 }
 
-RigidBody* create_body(float x, float y, float width, float height, float mass, bool is_static) {
-    RigidBody* body = malloc(sizeof(RigidBody));
+NE_RigidBody* create_body(float x, float y, float width, float height, float mass, bool is_static) {
+    NE_RigidBody* body = malloc(sizeof(NE_RigidBody));
     body->hitbox.position.x = x;
     body->hitbox.position.y = y;
     body->hitbox.size.x = width;
@@ -30,14 +30,14 @@ RigidBody* create_body(float x, float y, float width, float height, float mass, 
     return body;
 }
 
-void add_body(PhysicsWorld* world, RigidBody* body) {
-    world->bodies = realloc(world->bodies, sizeof(RigidBody*) * (world->body_count + 1));
+void add_body(NE_PhysicsWorld* world, NE_RigidBody* body) {
+    world->bodies = realloc(world->bodies, sizeof(NE_RigidBody*) * (world->body_count + 1));
     world->bodies[world->body_count++] = body;
 }
 
-void update_physics(PhysicsWorld* world, float delta_time) {
+void update_physics(NE_PhysicsWorld* world, float delta_time) {
     for (int i = 0; i < world->body_count; i++) {
-        RigidBody* body = world->bodies[i];
+        NE_RigidBody* body = world->bodies[i];
         if(body->is_static) continue;
         
         body->hitbox.position.x += body->velocity.x * delta_time;
@@ -56,7 +56,7 @@ void update_physics(PhysicsWorld* world, float delta_time) {
     }
 }
 
-bool check_collision(RigidBody* body1, RigidBody* body2) {
+bool check_collision(NE_RigidBody* body1, NE_RigidBody* body2) {
     if (body1->hitbox.position.x + body1->hitbox.size.x < body2->hitbox.position.x) return false;
     if (body1->hitbox.position.x > body2->hitbox.position.x + body2->hitbox.size.x) return false;
     if (body1->hitbox.position.y + body1->hitbox.size.y < body2->hitbox.position.y) return false;
@@ -65,7 +65,7 @@ bool check_collision(RigidBody* body1, RigidBody* body2) {
 }
 
 
-void resolve_collision(RigidBody* body1, RigidBody* body2) {
+void resolve_collision(NE_RigidBody* body1, NE_RigidBody* body2) {
 
     if (body1->is_static && body2->is_static) return;
 
@@ -103,10 +103,10 @@ void resolve_collision(RigidBody* body1, RigidBody* body2) {
     }
 }
 
-void draw_bodies(Window* window, PhysicsWorld* world){
+void draw_bodies(NE_Window* window, NE_PhysicsWorld* world){
     SDL_SetRenderDrawColor(window->renderer, 255, 0, 0, 255);
     for (int i = 0; i < world->body_count; i++) {
-        RigidBody* body = world->bodies[i];
+        NE_RigidBody* body = world->bodies[i];
         SDL_FRect rect = {body->hitbox.position.x, body->hitbox.position.y, body->hitbox.size.x, body->hitbox.size.y};
         SDL_RenderRect(window->renderer, &rect);
     }

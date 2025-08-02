@@ -20,6 +20,7 @@
         "math.h": "c",
         "ratio": "c",
         "cmath": "c",
-        "format": "c"
+        "format": "c",
+        "map": "c"
     }
 }

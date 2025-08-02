@@ -13,11 +13,11 @@
   * @struct Viewport
   * @brief Represents a 2D camera in world space.
   */
- typedef struct Viewport {
+ typedef struct NE_Viewport {
      float x, y;         /**< Camera top-left position in world space. */
      int width, height;  /**< Screen-space dimensions in pixels. */
      float zoom;         /**< Zoom level (1.0 = normal, 2.0 = zoomed in). */
- } Viewport;
+ } NE_Viewport;
  
  /**
  * @brief Initialize a new viewport (camera).
@@ -28,7 +28,7 @@
  * @param zoom Zoom level (1.0 = no zoom).
  * @return Pointer to the created Viewport.
  */
-Viewport* viewport_init(float x, float y, int width, int height, float zoom);
+NE_Viewport* viewport_init(float x, float y, int width, int height, float zoom);
 
 /**
  * @brief Move the viewport camera to a new world-space position.
@@ -36,14 +36,14 @@ Viewport* viewport_init(float x, float y, int width, int height, float zoom);
  * @param destination_x Target world x-coordinate.
  * @param destination_y Target world y-coordinate.
  */
-void viewport_move(Viewport *vp, float destination_x, float destination_y);
+void viewport_move(NE_Viewport *vp, float destination_x, float destination_y);
 
 /**
  * @brief Get the current world-space bounds visible through the viewport.
  * @param vp Pointer to the Viewport.
  * @return A rectangle representing the visible area in world space.
  */
-SDL_FRect viewport_get_view(Viewport *vp);
+SDL_FRect viewport_get_view(NE_Viewport *vp);
 
 /**
  * @brief Convert a rectangle from world-space to screen-space.
@@ -51,7 +51,7 @@ SDL_FRect viewport_get_view(Viewport *vp);
  * @param world_rect The rectangle in world coordinates.
  * @return A new rectangle transformed into screen coordinates.
  */
-SDL_FRect viewport_world_to_screen(Viewport *vp, SDL_FRect world_rect);
+SDL_FRect viewport_world_to_screen(NE_Viewport *vp, SDL_FRect world_rect);
 
 /**
  * @brief Determine whether a world-space rectangle is outside the camera's view.
@@ -59,7 +59,7 @@ SDL_FRect viewport_world_to_screen(Viewport *vp, SDL_FRect world_rect);
  * @param world_rect Rectangle in world space to test.
  * @return true if the rectangle is outside the viewport; false if visible.
  */
-bool camera_cull_rect(Viewport *vp, SDL_FRect world_rect);
+bool camera_cull_rect(NE_Viewport *vp, SDL_FRect world_rect);
 
 
 /**
@@ -67,7 +67,7 @@ bool camera_cull_rect(Viewport *vp, SDL_FRect world_rect);
  * @param vp Pointer to the Viewport to free.
  * 
  */
-void free_viewport(Viewport *vp);
+void free_viewport(NE_Viewport *vp);
 
  
  #endif

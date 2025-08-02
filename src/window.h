@@ -16,7 +16,7 @@ typedef struct {
     SDL_Window* window;
     SDL_Renderer* renderer;
     int width, height;
-} Window;
+} NE_Window;
 /**
  * @brief Creates and initializes a window and renderer.
  *
@@ -25,42 +25,42 @@ typedef struct {
  * @param width Desired width of the window.
  * @param height Desired height of the window.
  */
-void create_window(Window *window, const char* title, int width, int height);
+void create_window(NE_Window *window, const char* title, int width, int height);
 
 /**
  * @brief Prepares the window for rendering by clearing the screen.
  *
  * @param window Pointer to the Window to begin rendering on.
  */
-void begin_rendering(Window *window);
+void begin_rendering(NE_Window *window);
 
 /**
  * @brief Presents the rendered content to the screen.
  *
  * @param window Pointer to the Window to end rendering on.
  */
-void end_rendering(Window *window);
+void end_rendering(NE_Window *window);
 
 /**
  * @brief Sets the window to fullscreen mode.
  *
  * @param window Pointer to the Window to modify.
  */
-void fullscreen_window(Window *window);
+void fullscreen_window(NE_Window *window);
 
 /**
  * @brief Sets the window to borderless fullscreen mode.
  *
  * @param window Pointer to the Window to modify.
  */
-void borderless_window(Window *window);
+void borderless_window(NE_Window *window);
 
 /**
  * @brief Sets the window to windowed mode (resizable with borders).
  *
  * @param window Pointer to the Window to modify.
  */
-void windowed_window(Window *window);
+void windowed_window(NE_Window *window);
 
 /**
  * @brief Checks whether the window is currently in fullscreen mode.
@@ -68,14 +68,14 @@ void windowed_window(Window *window);
  * @param window Pointer to the Window to check.
  * @return true if the window is in fullscreen mode, false otherwise.
  */
-bool is_fullscreen(Window *window);
+bool is_fullscreen(NE_Window *window);
 
 /**
  * @brief Destroys the window and renderer and cleans up resources.
  *
  * @param window Pointer to the Window to destroy.
  */
-void destroy_window(Window *window);
+void destroy_window(NE_Window *window);
 
 
 #endif // WINDOW_H

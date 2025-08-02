@@ -1,6 +1,6 @@
 #include "window.h"
 
-void create_window(Window *window, const char* title,int width, int height) {
+void create_window(NE_Window *window, const char* title,int width, int height) {
     window->width = width;
     window->height = height;
 
@@ -25,26 +25,26 @@ void create_window(Window *window, const char* title,int width, int height) {
 }
 
 
-void begin_rendering(Window *window) {
+void begin_rendering(NE_Window *window) {
     SDL_SetRenderDrawColor(window->renderer, 0, 0, 0, 255);
     SDL_RenderClear(window->renderer);
 }
 
 
-void end_rendering(Window *window) {
+void end_rendering(NE_Window *window) {
     SDL_RenderPresent(window->renderer);
 }
 
 
-void fullscreen_window(Window *window){ SDL_SetWindowFullscreen(window->window, true); }
-void borderless_window(Window *window){ SDL_SetWindowBordered(window->window, true); }
-void windowed_window(Window *window) { SDL_SetWindowFullscreen(window->window, false); }
+void fullscreen_window(NE_Window *window){ SDL_SetWindowFullscreen(window->window, true); }
+void borderless_window(NE_Window *window){ SDL_SetWindowBordered(window->window, true); }
+void windowed_window(NE_Window *window) { SDL_SetWindowFullscreen(window->window, false); }
 
-bool is_fullscreen(Window *window) {
+bool is_fullscreen(NE_Window *window) {
     return SDL_GetWindowFlags(window->window) & SDL_WINDOW_FULLSCREEN;
 }
 
-void destroy_window(Window *window) {
+void destroy_window(NE_Window *window) {
     if (window->renderer) {
         SDL_DestroyRenderer(window->renderer);
     }
